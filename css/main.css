@@ -1,0 +1,11 @@
+body {
+    background-color: #e74c3c;
+    font-family: Ubuntu;
+    color: #fff;
+    font-size: 20px;
+}
+
+.content {
+    width: 80%
+    margin: 0 auto;
+}
