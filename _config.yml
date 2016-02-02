@@ -1,9 +1,19 @@
-name: "My W[ao]nderings"
-description: "Musings and photographs from my wanderings and wonderings about this planet."
+# Permalinks
+#
+# Use of `relative_permalinks` ensures post links from the index work properly.
+permalink:           pretty
+relative_permalinks: true
 
-url: "http://ryanheathcote.com"
+# Setup
+title:               Ryan Heathcote
+tagline:             'Engineer. Teacher. Dreamer.'
+description:         'This is where I collect the many profound and deep brain things that happen inside my head.'
+url:                 http://ryanheathcote.com
+baseurl:             ''
+paginate:            5
 
-paginate: 10
-
-markdown: redcarpet
-permalink: pretty
+# About/contact
+author:
+  name:              Ryan Heathcote
+  url:               http://ryanheathcote.com/mdo
+  email:             ryan.m.heathcote@gmail.com

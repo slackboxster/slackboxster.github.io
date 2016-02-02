@@ -1,50 +1,38 @@
-<html>
-    <head>
-        <title>Ryan Heathcote</title>
-        <link href="http://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet" type="text/css" />
-        <style type="text/css">
-            body {
-                font-family:Ubuntu;
-                /*background-color:#ff3A25;
-                color:#ecf0f1;*/
-                background-color:#111;
-                color:#eee;
-                text-align:center;
-                background-image:url(http://ryanheathcote.com/shoes.jpg);
-                background-size:cover;
-                background-position:bottom,center;
-            }
-            h1,h2 { 
-                background:none;
-                background:rgba(50,50,50,0.6);
-            }
-            h1 {
-                font-weight:normal;
-                font-size:75px;
-            }
-            h1.name {
-                margin-top:10%;
-            }
-            h2 {
-                font-weight:normal;
-                font-size:50px;
-            }
-            p {
-                font-size:30px; 
-            }
-            a {
-                font-size:14px;
-                color:#000;
-                text-decoration:none;
-                font-style:italic;
-            }
-            a:visited {
-                color:#000;
-            }
-        </style>
-    </head>
-    <body>
-        <h1 class="name">Ryan Heathcote</h1>
-        <h2>My W[ao]nderings</h2>
-    </body>
-</html>
+---
+layout: default
+title: Blog 
+---
+
+<div class="posts">
+  {% for post in paginator.posts %}
+  <div class="post">
+    <h1 class="post-title">
+      <a href="{{ site.baseurl }}{{ post.url }}">
+        {{ post.title }}
+      </a>
+    </h1>
+
+    <span class="post-date">{{ post.date | date_to_string }}</span>
+
+    {{ post.content }}
+  </div>
+  {% endfor %}
+</div>
+
+<div class="pagination">
+  {% if paginator.next_page %}
+    <a class="pagination-item older" href="{{ site.baseurl }}/page{{paginator.next_page}}">Older</a>
+  {% else %}
+    <span class="pagination-item older">Older</span>
+  {% endif %}
+  {% if paginator.previous_page %}
+    {% if paginator.page == 2 %}
+      <a class="pagination-item newer" href="{{ site.baseurl }}/">Newer</a>
+    {% else %}
+      <a class="pagination-item newer" href="{{ site.baseurl }}/page{{paginator.previous_page}}">Newer</a>
+    {% endif %}
+  {% else %}
+    <span class="pagination-item newer">Newer</span>
+  {% endif %}
+</div>
+

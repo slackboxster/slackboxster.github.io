@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+ <title>Ryan Heathcote</title>
+ <link href="http://ryanheathcote.com/atom.xml" rel="self"/>
+ <link href="http://ryanheathcote.com/"/>
+ <updated>2016-02-02T14:45:37-05:00</updated>
+ <id>http://ryanheathcote.com</id>
+ <author>
+   <name>Ryan Heathcote</name>
+   <email>ryan.m.heathcote@gmail.com</email>
+ </author>
+
+ 
+ <entry>
+   <title>Sanitizing HTML in Aurelia</title>
+   <link href="http://ryanheathcote.com/2016/02/02/sanitize-html-aurelia/"/>
+   <updated>2016-02-02T00:00:00-05:00</updated>
+   <id>http://ryanheathcote.com/2016/02/02/sanitize-html-aurelia</id>
+   <content type="html">&lt;p&gt;The documentation for Aurelia is still developing, and I had to piece together some details about binding and sanitizing HTML in Aurelia.&lt;/p&gt;
+</content>
+ </entry>
+ 
+
+</feed>
