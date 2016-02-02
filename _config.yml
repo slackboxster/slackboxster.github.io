@@ -3,6 +3,7 @@
 # Use of `relative_permalinks` ensures post links from the index work properly.
 permalink:           pretty
 relative_permalinks: true
+markdown: redcarpet
 
 # Setup
 title:               Ryan Heathcote
@@ -15,5 +16,5 @@ paginate:            5
 # About/contact
 author:
   name:              Ryan Heathcote
-  url:               http://ryanheathcote.com/mdo
+  url:               http://ryanheathcote.com/
   email:             ryan.m.heathcote@gmail.com
