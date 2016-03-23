@@ -1,0 +1,16 @@
+---
+layout: default
+title: Gallery
+slideshow:
+    - image: /images/2016-03-23-beard.jpg
+      caption: One amazing beard.
+---
+<style>
+    .image {
+        width: 100%;
+    }
+</style>
+{% for item in page.slideshow %}
+<a href="{{ item.image }}" data-lightbox="image-{{ forloop.index }}" data-title="{{ item.caption }}">{{ item.caption }}</a>
+{% endfor %}
+<script src="{{site.url}}/js/lightbox-plus-jquery.js"></script>
