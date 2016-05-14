@@ -7,7 +7,7 @@ While working on a Grails 3 application, I needed to access the logger inside a 
 
 src/main/groovy/com/package/name/MyUtil.groovy
 
-```
+```groovy
 package com.package.name
 
 import groovy.util.logging.Slf4j
