@@ -30,7 +30,7 @@ Also use man pages -- if you want to get a technical manual for a command, `man 
 
 * If you don't know much about computers, you can help your team by maintaining checklists and helping your team members communicate with one another. Try to make a role for yourself with what you know. You may be surprised at how much just asking questions can help your team members. Even if you won't ever do this again, make the most of your experience.
 
-##Disaster response
+## Disaster response
 Come up with a set of simple steps for your team to follow when you find out you've been hacked. Something like this:
 
 * DO NOT PANIC!
