@@ -3,8 +3,6 @@ layout: post
 title: Incomplete Linux Security Crash Course
 ---
 
-# Incomplete Linux Security Crash Course
-
 *These are the notes for my Linux Security lessons at Liberty University's GenCyber summer camp.*
 
 ## Introductory Videos
