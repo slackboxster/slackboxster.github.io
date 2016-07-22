@@ -3,7 +3,7 @@ layout: post
 title: Incomplete Linux Security Crash Course
 ---
 
-*These are the notes for my Linux Security lessons at Liberty University's GenCyber summer camp.*
+*These are the notes for my Linux Security lessons at [Liberty University's GenCyber summer camp](http://www.liberty.edu/news/index.cfm?PID=18495&MID=199858).*
 
 ## Introductory Videos
 Here are some videos to help introduce concepts that may be foreign to you:
