@@ -77,6 +77,7 @@ In order to find and remove these backdoors from the inside:
     * in this case 3652 is the process id.
 2. Figure out which files are being used by the process.
     * `lsof -p 3652` (change the number to match the process id)
+    
     ```
     COMMAND  PID USER   FD   TYPE DEVICE SIZE/OFF    NODE NAME
     nc      3652 rose  cwd    DIR    8,1     4096 2097264 /home/rose
@@ -91,6 +92,7 @@ In order to find and remove these backdoors from the inside:
     nc      3652 rose    3u  IPv4   7535      0t0     TCP *:1337 (LISTEN)
 
     ```
+    
     * Things to note:
         * the user for all these commands is rose -- so rose is the one running the backdoor.
         * some of the files used by the process are the program that it is running. In this case, `/bin/nc` is the actual program. But nc is a basic program. We need to figure out HOW rose is running the program.
