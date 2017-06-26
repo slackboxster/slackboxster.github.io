@@ -94,7 +94,8 @@ This will be the MOST IMPORTANT thing you do to secure your servers. Make sure y
 
 ### Analyze the situation
 
-* Figure out what users are on each server by looking at the file `/etc/passwd`
+* Find all the users on your system:
+    * `cat /etc/passwd`
 	* This file contains a number of system accounts that should be on there. 
 	* You can determine which are system users and which are normal users by looking at the uid (the first number after the username in `/etc/passwd` -- if that is less than 1000, it is a system account.
 	* (where did I get that number? the `/etc/login.defs` file -- look for `UID_MIN 1000`).
