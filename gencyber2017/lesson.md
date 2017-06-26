@@ -1,6 +1,7 @@
 ---
 layout: page
 title: Incomplete Linux Security Crash Course
+permalink: gencyber2017
 ---
 
 # Securing Linux
