@@ -6,7 +6,7 @@ permalink: gencyber2017
 
 # Securing Linux
 
-Welcome to my Linux security crash course designed for Liberty University's GenCyber Summer Camp. It explains how to get a linux system secure enough to survive a day of red-team attacks.
+Welcome to my Linux security crash course designed for Liberty University's GenCyber Summer Camp. It explains how to get a linux system secure enough to survive a day of Red Team attacks.
 
 
 ## Figuring out new things
@@ -21,7 +21,7 @@ No human could possibly tell you all there is to know about linux. I don't even 
 * Make the most of this experience. You have a bunch of really smart mentors and teachers who want to help you learn and grow, personally and technically.
 * Take notes: there is a lot to learn, and each person can only learn so much. Take notes and help your team members learn.
 * Practice: working with computers is like riding a bicycle. You can't learn a lot from lectures. You have to *do* it.
-* Work as a team. The smartest person on your team at best knows 10% of what the dumbest red-teamer knows. The only way to overcome the skill deficit is to work together.
+* Work as a team. The smartest person on your team at best knows 10% of what the dumbest Red Team member knows. The only way to overcome the skill deficit is to work together.
 * Don't Panic: yelling, at each other or at the computer, is not going to help you stop a hacker. Calm, clear thinking is the only way you'll get somewhere.
 * If you feel lost in the technical side of things, you can still be a big help to your team:
     * look at the checklist and choose one or two things to learn to do really well. Work with a mentor to make sure you've got them down.
@@ -173,7 +173,7 @@ If you do the password change, this is a less significant vulnerability, but it 
 
 ## 3. OS Software updates.
 
-Once you have secured your user accounts, the next thing that Red Team will want to attack is vulnerabilities that give access without having a valid user account. They will use a database of known vulnerabilities, so the best way to secure against this is to update your software. The moment a red-teamer detects out of date software, they are only two clicks away from hosing your server.
+Once you have secured your user accounts, the next thing that Red Team will want to attack is vulnerabilities that give access without having a valid user account. They will use a database of known vulnerabilities, so the best way to secure against this is to update your software. The moment a Red Team member detects out of date software, they are only two clicks away from hosing your server.
 
 Updating software in Debian is usually really simple:
  
@@ -394,7 +394,7 @@ For the adventurous: I love using vim. If you are bored and want a really cool c
 
 
 ## Learn more about user management
-User management can get much more complicated, and in a normal production setup we would disable root login, give every team member a user account on the server, and do a lot more in-depth configuration of the user accounts on the server. Our objective is to secure against red-team, so we will do the absolute minimum that achieves that goal, so that we have time to do all the things that secure against red-team, instead of spending the whole week doing enterprise-grade user management.
+User management can get much more complicated, and in a normal production setup we would disable root login, give every team member a user account on the server, and do a lot more in-depth configuration of the user accounts on the server. Our objective is to secure against Red Team, so we will do the absolute minimum that achieves that goal, so that we have time to do all the things that secure against Red Team, instead of spending the whole week doing enterprise-grade user management.
 
 See [this ubuntu article](https://help.ubuntu.com/14.04/serverguide/user-management.html) for more info on managing users (our servers are debian, but ubuntu is based on debian, and its article is much more friendly).
 
