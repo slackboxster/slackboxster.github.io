@@ -139,3 +139,5 @@ Updating software in Debian is usually really simple:
  
 * Run this command:`sudo apt-get update; sudo apt-get upgrade`
 * Then just wait for the packages to update. 
+
+## Further content will come tomorrow!
