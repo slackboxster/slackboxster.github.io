@@ -1,3 +1,8 @@
+---
+layout: page
+title: Incomplete Linux Security Crash Course
+---
+
 # Securing Linux
 
 Welcome to my Linux security crash course designed for Liberty University's GenCyber Summer Camp. It explains how to get a linux system secure enough to survive a day of red-team attacks.
