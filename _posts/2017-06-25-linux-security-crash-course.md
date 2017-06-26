@@ -77,17 +77,17 @@ In order to find and remove these backdoors from the inside:
 2. Figure out which files are being used by the process.
     * `lsof -p 3652` (change the number to match the process id)
     ```
-    COMMAND  PID USER   FD   TYPE DEVICE SIZE/OFF    NODE NAME
-    nc      3652 rose  cwd    DIR    8,1     4096 2097264 /home/rose
-    nc      3652 rose  rtd    DIR    8,1     4096       2 /
-    nc      3652 rose  txt    REG    8,1    27160  655411 /bin/nc.traditional
-    nc      3652 rose  DEL    REG    8,1          1576273 /lib/x86_64-linux-gnu/libnss_files-2.13.so
-    nc      3652 rose  DEL    REG    8,1          1576266 /lib/x86_64-linux-gnu/libc-2.13.so
-    nc      3652 rose  DEL    REG    8,1          1576264 /lib/x86_64-linux-gnu/ld-2.13.so
-    nc      3652 rose    0u  sock    0,7      0t0    7534 can't identify protocol
-    nc      3652 rose    1u   REG    8,1        0 2490381 /tmp/tmpfhdUXJp (deleted)
-    nc      3652 rose    2u   REG    8,1        0 2490381 /tmp/tmpfhdUXJp (deleted)
-    nc      3652 rose    3u  IPv4   7535      0t0     TCP *:1337 (LISTEN)
+        COMMAND  PID USER   FD   TYPE DEVICE SIZE/OFF    NODE NAME
+        nc      3652 rose  cwd    DIR    8,1     4096 2097264 /home/rose
+        nc      3652 rose  rtd    DIR    8,1     4096       2 /
+        nc      3652 rose  txt    REG    8,1    27160  655411 /bin/nc.traditional
+        nc      3652 rose  DEL    REG    8,1          1576273 /lib/x86_64-linux-gnu/libnss_files-2.13.so
+        nc      3652 rose  DEL    REG    8,1          1576266 /lib/x86_64-linux-gnu/libc-2.13.so
+        nc      3652 rose  DEL    REG    8,1          1576264 /lib/x86_64-linux-gnu/ld-2.13.so
+        nc      3652 rose    0u  sock    0,7      0t0    7534 can't identify protocol
+        nc      3652 rose    1u   REG    8,1        0 2490381 /tmp/tmpfhdUXJp (deleted)
+        nc      3652 rose    2u   REG    8,1        0 2490381 /tmp/tmpfhdUXJp (deleted)
+        nc      3652 rose    3u  IPv4   7535      0t0     TCP *:1337 (LISTEN)
 
     ```
     * Things to note:
