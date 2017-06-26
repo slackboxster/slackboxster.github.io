@@ -162,6 +162,7 @@ If you do the password change, this is a less significant vulnerability, but it 
 `sudo apt-get install members`
 	* If you see a user in the resulting list who shouldn't be there, remove them from the group:
         * `deluser user group` (make sure not to `deluser user`)
+        * example: `deluser rose sudo`
 
 ## 3. OS Software updates.
 
