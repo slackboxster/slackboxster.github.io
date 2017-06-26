@@ -121,9 +121,8 @@ In order to find and remove these backdoors from the inside:
         * Now remove the backdoor file:
             * `rm /usr/sbin/backdoor`
 3. Verify that it's gone:
-    * no more listening `netstat -tulpn | grep 1337`
-    * files are gone `ls <the file location>`
-    * the process is dead `ps x | grep <filename>`
+    * no more listening `netstat -tulpn | grep 1337` ( should give no output )
+    * files are gone `cat /usr/sbin/backdoor` (should say "no file or directory")
 
 Once we've cleaned up the operating system, we can move on to the server itself.
 
