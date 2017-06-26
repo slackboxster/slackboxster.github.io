@@ -114,12 +114,29 @@ How I generate passwords:
 Go to the wikipedia random page repeatedly.
 https://en.wikipedia.org/wiki/Special:Random
 
-Select page titles with unusual words.
-Concatenate two together.
+Select page titles with long or unusual words.
+Concatenate two or three words together.
 
 ```
 
+I have a script for generating passwords. To use this script, do the following:
 
+edit a file:
+`nano wikipwgen.sh`
+enter the following text:
+```
+#!/bin/bash
+
+while true
+do
+    wget -qO - http://en.wikipedia.org/wiki/Special:Random | grep '<title>.*</title>' | sed -e 's/<title>\(.*\) - Wikipedia,.*encyclopedia<\/title>/\1/' | sed -e 's/<[^>]*>//g'
+done
+```
+make it executable:
+`chmod +x wikipwgen.sh`
+
+run it:
+`./wikipwgen.sh`
 
 This is the most important step. If you forget to change a password, it is likely that Red Team will be logged into that account within 5 minutes. Maybe an hour because of how many servers they are attacking. In other words, one unchanged password and you will not stand a chance.
 
