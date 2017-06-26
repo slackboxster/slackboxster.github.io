@@ -107,6 +107,20 @@ The toor user is unnecessary and poses significant security risks. `deluser toor
 
 ### Change passwords
 
+
+```
+How I generate passwords:
+
+Go to the wikipedia random page repeatedly.
+https://en.wikipedia.org/wiki/Special:Random
+
+Select page titles with unusual words.
+Concatenate two together.
+
+```
+
+
+
 This is the most important step. If you forget to change a password, it is likely that Red Team will be logged into that account within 5 minutes. Maybe an hour because of how many servers they are attacking. In other words, one unchanged password and you will not stand a chance.
 
 Use the printouts to set the passwords for your system. Ordinarily we would not use the same password twice ever. However, we will strategically reuse passwords to save time and simplify things. But we won't use all the same passwords so that Red Team doesn't get a whole lot of benefit from discovering one password.
