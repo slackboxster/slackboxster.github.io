@@ -315,6 +315,7 @@ We need to disable anonymous access. But it also appears that the toor user has 
             * with this, we finally have the path to the program: `/usr/local/sbin/proftpd`
             * unlike the backdoor, this is not a bash script (want to find out? `cat /usr/local/sbin/proftpd` will fill your screen with junk, because it is a binary file, not a text file).
         * We can go ahead and delete that file: `rm /usr/local/sbin/proftpd`
+        * double check the init script is gone: `rm /etc/init.d/proftpd`
         * And kill the process: `kill -s SIGKILL 3795`
     4. Verify that it's gone:
         * no longer listening `netstat -tulpn | grep proftpd` ( should give no output )
@@ -334,7 +335,7 @@ We need to disable anonymous access. But it also appears that the toor user has 
             * change `anonymous_enable=YES` to `anonymous_enable=NO`
             * uncomment the line `#local_enable=YES` -- make it `local_enable=YES` (otherwise scorebot will have trouble...)
         3. save the file
-        4. restart the service to reload configuration: `service vsftp restart`
+        4. restart the service to reload configuration: `service vsftpd restart`
     * ordinary we would also allow local users to log in, however, we just need to keep the port open, not actually logging in since nagios can't log in..., so not enabling local users keeps things simple. :)
 5. Verify you are listening and anonymous is banned:
     * `netstat -tulpn | grep vsftpd`
