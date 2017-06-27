@@ -211,34 +211,38 @@ Updating software in Debian is usually really simple:
 * Configuration: configure services correctly so that they don't allow inappropriate access.
 * User accounts: if services allow logins, make sure the user accounts for those services are secure.
 
-While there are a number of services that probably don't need to be running on your server, the really important ones are the ones that are accessible over the network. These are the ones that Red Team can use to attack your server.
+There are a number of services that don't need to be running on your server. You do want to keep the scored services running, and you want to keep services that support the scored services running. Also keep ssh, otherwise you can't log in.
 
 * Find services listening on the network with: `netstat -tulpn`
-* You will see a list of services. Compare that with the list of services listed in the Nagios scoring system. Any that are not scored on, you should be free to remove. Some of these services show as vulnerable in the OpenVAS scan, but some are still unnecessary.
-* If you don't know what a service does, use google. ;)
+* You will see a list of listening processess. You can use some googling and comparing things with the list of scored services to see if you can remove one. 
+* Services you should not remove are therefore:
+    * ssh
+    * ftp
+    * apache
+    * tomcat (on jenkins)
+    * java (it's what runs jenkins!)
+    * mysql
+    * postgresql
+    * dhclient (this is how your server gets its IP address).
 
 ## Minimization: remove unnecessary services
 
+For each service, remove it by uninstalling the associated package with `apt-get remove`. Removing the package should also stop the service.
 
-For each:
-
-* stop the service: `service samba stop`
-* completely uninstall the program: `apt-get purge samba`
+Also, you could specify multiple packages in the remove command, for example: `apt-get remove cups samba nfs-common rpcbind`
 
 Remove at least the following services:
 
-* cups (printing): `service cups stop`; `apt-get remove cups`
+* cups (printing): `apt-get remove cups`
 * swat: `update-inetd --disable swat`
-* samba (windows file sharing) (smbd and nmbd): `/etc/init.d/samba stop`; or just `apt-get remove samba` (apt also stops the service)
-* nfs (linux file sharing): `service nfs-common stop`; `apt-get remove nfs-common`
-* rpcbind (used by nfs): `service rpcbind stop`; `apt-get remove rpcbind`
-* avahi-daemon (apple discovery services!): `service avahi-daemon stop`; `apt-get remove avahi-daemon`
-* exim4 (email server): `service exim4 stop`; `apt-get remove exim4`
-* postgres (sql databases): (be careful -- make sure it is not being used by the application running on the server) `service postgresql stop`; `apt-get remove postgresql`
-* minissdpd (plug and play network protocols): `service minissdpd stop`; `apt-get remove minissdpd`
+* samba (windows file sharing) (smbd and nmbd): `apt-get remove samba`
+* nfs (linux file sharing): `apt-get remove nfs-common`
+* rpcbind (used by nfs): `apt-get remove rpcbind`
+* avahi-daemon (apple discovery services!): `apt-get remove avahi-daemon`
+* exim4 (email server): `apt-get remove exim4 exim4-base` (note that there are two packages to remove -- exim4-base is the one that removes the service)
+* minissdpd (plug and play network protocols): `apt-get remove minissdpd`
 
-
-Once a server is secured, the netstat output should look something like this (although it will be a little different on some servers):
+Once you've removed those, run `netstat -tulpn` again. Here is an example output:
 
 ```
 Active Internet connections (only servers)
@@ -258,31 +262,15 @@ When you are done:
 `apt-get autoremove` to remove remaining unnecessary packages.
 
 
-## Minimization: remove unnecessary services
-
-For each:
-
-* stop the service: `service samba stop`
-* completely uninstall the program: `apt-get purge samba`
-
-Remove at least the following services:
-
-* samba (smbd and nmbd): service samba stop; apt-get purge samba
-* cups (printing): service cups stop; apt-get purge cups
-
-look for:
-telnet, rlogin, rexec, automount, named, inetd, portmap (nfs)
-
-remove anything but ssh, ftp, apache, tomcat, and mysql.
-
-You can get more information from [this article](https://www.tecmint.com/remove-unwanted-services-from-linux/) and [this q&a](http://askubuntu.com/questions/477596/how-to-stop-and-remove-ftp-service).
-
 ## Configuration and User Accounts: configure services securely.
 
-* ssh (port 22): secure shell allows operating system users to log in. Apart from changing operating system user passwords and updating packages, there isn't much to do here. There is the scan warning about weak encryption algorithms. However, as advanced as our Red Team is, they aren't the NSA, and they don't have a week to attack us, so the weak encryption algorithms should not cause significant problems, and therefore are not worth spending time on (yet).
-    * consider quickly installing fail2ban as a countermeasure.
+Interesting tidbit: I got most of my information for this section from googling "How to Secure <Insert Name of Service> Linux". Combined with my knowledge about how this stuff works, I condensed it down to the following steps. But feel free to do more googling if you have time on your hands. 
 
-* ftp: we need to disable anonymous access.
+### FTP (port 21)
+We need to disable anonymous access. But it also appears that the toor user has manually installed and configured a less secure ftp server, so we'll have to remove that first.
+
+1. Remove ProFTP (and toor)
+    * 
     remove proftp
     delete toor user
     install ftp
@@ -352,11 +340,16 @@ if "Local Address" starts with 0.0.0.0, it is public. If 127.0.0.1, it's private
     * protect the shutdown port
 
 
-(also, read an article on properly securing each -- to make sure any gotchas are caught.)
+### ssh (port 22)
+
+Secure SHell allows operating system users to log in. Apart from changing operating system user passwords and updating packages, there isn't much to do here. 
+
+There is the scan warning about weak encryption algorithms. However, as advanced as our Red Team is, they aren't the NSA, and they don't have a week to attack us, so the weak encryption algorithms should not cause significant problems, and therefore are not worth spending time on (yet). Also, we aren't using outdated ssh clients, so we won't be exposing this vulnerability.
 
 
+If we have time, we can try installing `fail2ban` as a countermeasure.
 
-* For anything else, google "How to secure" followed by the name of the thing.
+
 
 ## 5. Application Software
 
@@ -425,3 +418,5 @@ User management can get much more complicated, and in a normal production setup 
 
 See [this ubuntu article](https://help.ubuntu.com/14.04/serverguide/user-management.html) for more info on managing users (our servers are debian, but ubuntu is based on debian, and its article is much more friendly).
 
+## Learn more about service management
+You can get more information from [this article](https://www.tecmint.com/remove-unwanted-services-from-linux/) and [this q&a](http://askubuntu.com/questions/477596/how-to-stop-and-remove-ftp-service).
