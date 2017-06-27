@@ -236,7 +236,7 @@ To test if a service is needed, stop it and check your nagios: `service <service
 Remove at least the following services:
 
 * cups (printing): `apt-get remove cups` (this actually disables cups, even though it isn't installed using cups. Just make sure you can't start the service after: try `service cups start` and check netstat.
-* swat: `update-inetd --disable swat`
+* swat: `update-inetd --disable swat` (verify with `cat /etc/inetd.conf`)
 * samba (windows file sharing) (smbd and nmbd): `apt-get remove samba`
 * nfs (linux file sharing): `apt-get remove nfs-common`
 * rpcbind (used by nfs): `apt-get remove rpcbind`
