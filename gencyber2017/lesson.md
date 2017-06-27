@@ -273,7 +273,7 @@ We need to disable anonymous access. But it also appears that the toor user has 
     * On your Kali machine, run this command to check for anonymous access:
         * `nmap -p 21 -v -oN results.txt --open --script ftp-anon 192.168.210.54` (make sure to change the IP Address!!)
         * if ftp anonymous is enabled, you'll see:
-            ```properties
+            ```
             PORT   STATE SERVICE
             21/tcp open  ftp
             | ftp-anon: Anonymous FTP login allowed (FTP code 230)
@@ -423,14 +423,25 @@ We need to disable anonymous access. But it also appears that the toor user has 
 
 
 ### Mysql: 
-    * only run it on loopback interface:
-        * configure: `nano /etc/mysql/my.cnf`
-        * change: `bind-address = 127.0.0.1`
-        * prevent loading local files: `local-infile=0`
-    * at this point, this is probably as secure as we'll get it for single application servers. If you were running multiple databases on a single mysql instance, you'd want to do things a little differently.
 
-if "Local Address" starts with 0.0.0.0, it is public. If 127.0.0.1, it's private to this server.
+It looks like this is not using the normal config directory
 
+* check what it's listening on: `netstat -tulpn | grep myslq`
+    * if "Local Address" starts with 0.0.0.0, it is public. If 127.0.0.1, it's private to this server.
+* configure: `nano /etc/mysql/my.cnf`
+* only run on the server's internal network.
+    * change: `bind-address = 0.0.0.0` to `bind-address = 127.0.0.1`
+* prevent loading local files: 
+    * add this to the next line after bind-address: `local-infile=0`
+* restart the service: `service mysql restart`
+
+
+Don't run it as root!
+`user            = root`
+
+
+### postgres
+either remove or only bind to local.
 
 * Tomcat
     * https://www.owasp.org/index.php/Securing_tomcat
