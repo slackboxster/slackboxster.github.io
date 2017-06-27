@@ -430,7 +430,9 @@ We need to disable anonymous access. But it also appears that the toor user has 
 
 ### Mysql: 
 
-It looks like this is not using the normal config directory
+Configure on all servers except drupal -- remove it on drupal: `apt-get remove mysql-server`
+
+On the rest of the servers, configure it:
 
 * check what it's listening on: `netstat -tulpn | grep myslq`
     * if "Local Address" starts with 0.0.0.0, it is public. If 127.0.0.1, it's private to this server.
@@ -448,8 +450,13 @@ It looks like this is not using the normal config directory
 
 ### postgres (port 3305)
 
+Remove this on all servers except drupal.
+
 For now, just remove it. If it disables one of your services, we can reinstall it.
 `apt-get remove postgresql`
+
+On Drupal, configure it to listen only locally:
+    * 
 
 ### tomcat (port 8080)
 
