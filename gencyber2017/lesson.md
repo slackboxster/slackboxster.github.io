@@ -233,7 +233,7 @@ Also, you could specify multiple packages in the remove command, for example: `a
 
 Remove at least the following services:
 
-* cups (printing): `apt-get remove cups`
+* cups (printing): `apt-get remove cups` (this actually disables cups, even though it isn't installed using cups. Just make sure you can't start the service after: try `service cups start` and check netstat.
 * swat: `update-inetd --disable swat`
 * samba (windows file sharing) (smbd and nmbd): `apt-get remove samba`
 * nfs (linux file sharing): `apt-get remove nfs-common`
@@ -433,17 +433,24 @@ It looks like this is not using the normal config directory
     * change: `bind-address = 0.0.0.0` to `bind-address = 127.0.0.1`
 * prevent loading local files: 
     * add this to the next line after bind-address: `local-infile=0`
+* Don't run it as root!
+    * change this `user            = root` to `user = mysql`
 * restart the service: `service mysql restart`
+* verify with `netstat -tulpn | grep mysql`
+    * `tcp        0      0 127.0.0.1:3306          0.0.0.0:*               LISTEN      24388/mysqld` -- this indicates we are listening only on localhost.
+* verify with nmap from kali: `nmap 192.168.210.54`
 
+### postgres (port 3305)
 
-Don't run it as root!
-`user            = root`
+For now, just remove it. If it disables one of your services, we can reinstall it.
+`apt-get remove postgresql`
 
+### tomcat (port 8080)
 
-### postgres
-either remove or only bind to local.
+* figure out where tomcat is running
+echo $CATALINA_HOME
+/opt/tomcat7
 
-* Tomcat
     * https://www.owasp.org/index.php/Securing_tomcat
     * remove default web application (just remove files... see the common section of the link)
     * change default management user account (xml) to not be tomcat/tomcat (unnecessary if the management application is removed).
