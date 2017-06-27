@@ -231,6 +231,8 @@ For each service, remove it by uninstalling the associated package with `apt-get
 
 Also, you could specify multiple packages in the remove command, for example: `apt-get remove cups samba nfs-common rpcbind`
 
+To test if a service is needed, stop it and check your nagios: `service <service> stop`.
+
 Remove at least the following services:
 
 * cups (printing): `apt-get remove cups` (this actually disables cups, even though it isn't installed using cups. Just make sure you can't start the service after: try `service cups start` and check netstat.
