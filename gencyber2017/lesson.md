@@ -132,9 +132,30 @@ Once we've cleaned up the operating system, we can move on to the server itself.
 This will be the MOST IMPORTANT thing you do to secure your servers. Make sure you do it well. Most of the teams in last year's camp got hacked very quickly by red team because they hadn't changed all of their operating system user account passwords. With Red Team's skill, it only takes one poorly secured user account for them to get in and hose the server.
 
 
+### Generating secure passwords
+
+I've developed a strategy for generating secure passwords that are easy to remember. The ideas come from [this xkcd cartoon](https://xkcd.com/936/) and a fellow LU student who mentioned using the Oxford Dictionary website to generate unusual words. A full explanation of what makes this strategy effective is beyond the scope of this lesson, but the idea is that long passwords are hard to guess, and passwords made up of combinations of unusual words (unlikely to be found in normal hacker dictionaries).
+
+My strategy is roughly like this:
+* Go to the [wikipedia random page](https://en.wikipedia.org/wiki/Special:Random) repeatedly
+* When a page title features a particularly peculiar long word, write it down.
+* Select two or three such words and put them together to create a long password that is really easy to remember (even if the words are hard to pronounce).
+
+Wikipedia works well for this strategy because it has articles about many diverse subjects with strange words. Biological and scientific terms, place names or terms from foreign languages, and technical terms from esoteric subjects, all combine to make randomized wikipedia a rich ecosystem of linguistic entropy. 
+
+However, any site that generates random long words, or even a site that generates passwords made up of multiple words (like the [xkcd password generator](com/20110811/xkcd-password-generator/)), can produce a similar effect. You may not get the diversity of wikipedia, but really, the key is to make things long without making them excessively complex. 
+ 
+I have a script that helps me get just the titles from Wikipedia's random page repeatedly. To use this script, do the following:
+
+* Download the script: `wget https://raw.githubusercontent.com/slackboxster/slackboxster.github.io/master/gencyber2017/scripts/wikipwgen.sh`
+* make it executable: `chmod +x wikipwgen.sh`
+* run the script: `./wikipwgen.sh`
+* Note: the script is an infinite loop. When you have enough titles, hit `Ctrl+C` to stop the script.
+
 ### Analyze the situation
 
 * Figure out what users are on each server by looking at the file `/etc/passwd`
+    * `cat /etc/passwd`
 	* This file contains a number of system accounts that should be on there. 
 	* You can determine which are system users and which are normal users by looking at the uid (the first number after the username in `/etc/passwd` -- if that is less than 1000, it is a system account.
 	* (where did I get that number? the `/etc/login.defs` file -- look for `UID_MIN 1000`).
@@ -143,7 +164,9 @@ This will be the MOST IMPORTANT thing you do to secure your servers. Make sure y
 
 ### Delete the toor user
 
-The toor user is unnecessary and poses significant security risks. `deluser toor` will remove him. :)
+The toor user is unnecessary and poses significant security risks. 
+
+`deluser toor` should remove the toor user. However, the toor user is running a process - proftpd specifically. Thus we will address removing the toor user when we work on securing ftp.
 
 ### Change passwords
 
@@ -259,6 +282,7 @@ You can get more information from [this article](https://www.tecmint.com/remove-
 
 * ftp: we need to disable anonymous access.
     remove proftp
+    delete toor user
     install ftp
     * https://www.pluralsight.com/blog/it-ops/how-to-set-up-safe-ftp-in-linux
     * `nano /etc/vsftpd.conf` and change `anonymous_enable=YES` to `anonymous_enable=NO`
