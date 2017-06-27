@@ -447,15 +447,20 @@ For now, just remove it. If it disables one of your services, we can reinstall i
 
 ### tomcat (port 8080)
 
-* figure out where tomcat is running
-echo $CATALINA_HOME
-/opt/tomcat7
-
-    * https://www.owasp.org/index.php/Securing_tomcat
-    * remove default web application (just remove files... see the common section of the link)
-    * change default management user account (xml) to not be tomcat/tomcat (unnecessary if the management application is removed).
-    * protect the shutdown port
-
+1. figure out where tomcat is running: `echo $CATALINA_HOME`
+    * gives us: `/opt/tomcat7`
+    * so go into that directory: `cd /opt/tomcat7`
+2. Remove the default web applications:
+    * go into the webapps directory: `cd webapps`
+    * verify with `pwd` -- should give: `/opt/tomcat7/webapps`
+    * `rm -rf docs examples`
+    * verify with ls.
+3. Change the management password:
+    * I'll need to research this a bit more...
+4. Protect the shutdown port
+    * I'll need to research this a bit more...
+5. Prevent directory listings.
+    * I'll need to research this a bit more...
 
 ### ssh (port 22)
 
@@ -463,10 +468,7 @@ Secure SHell allows operating system users to log in. Apart from changing operat
 
 There is the scan warning about weak encryption algorithms. However, as advanced as our Red Team is, they aren't the NSA, and they don't have a week to attack us, so the weak encryption algorithms should not cause significant problems, and therefore are not worth spending time on (yet). Also, we aren't using outdated ssh clients, so we won't be exposing this vulnerability.
 
-
 If we have time, we can try installing `fail2ban` as a countermeasure.
-
-
 
 ## 5. Application Software
 
@@ -490,7 +492,6 @@ I have been in charge of two servers running WordPress that got hacked. One was 
 
 Mr Frankenfield will cover this section in more detail. 
 
-
 ## General Verification:
 
 Check for anonymous ftp on all your linux servers:
@@ -500,18 +501,7 @@ Check for anonymous ftp on all your linux servers:
 
 Mr Frankenfield will cover firewalls in his networking section, but I'll quickly cover them in less detail.
 
-## 7. Detection 
-Detection mechanisms come in two main flavors:
-
-focus this section on linux detection mechinisms (and identify it as an opportunity to let less technical team members help -- as in, have a mentor explain to them what a legitimate threat looks like relative to an attacker threat.)
-
-* log files, like `auth.log` and apache's access and error logs.
-* *build out a list of logs to watch*
-* Monitoring systems like your nagios and the scorebot.
-
-
-also, in the real world, elaborate intrusion detection systems are used.
-
+`iptables`
 
 # Resources
 
@@ -550,3 +540,4 @@ You can get more information from [this article](https://www.tecmint.com/remove-
 [Apache Wiki Permissions Article ](https://wiki.apache.org/httpd/FileSystemPermissions)
 [Apache Permissions Article](http://fideloper.com/user-group-permissions-chmod-apache)
 [Securing Mysql](https://www.digitalocean.com/community/tutorials/how-to-secure-mysql-and-mariadb-databases-in-a-linux-vps)
+[Securing Tomcat](https://www.owasp.org/index.php/Securing_tomcat)
