@@ -269,26 +269,84 @@ Interesting tidbit: I got most of my information for this section from googling 
 ### FTP (port 21)
 We need to disable anonymous access. But it also appears that the toor user has manually installed and configured a less secure ftp server, so we'll have to remove that first.
 
+0. Check for anonymous access on your server:
+    * On your Kali machine, run this command to check for anonymous access:
+        * `nmap -p 21 -v -oN results.txt --open --script ftp-anon 192.168.210.54` (make sure to change the IP Address!!)
+        * if ftp anonymous is enabled, you'll see:
+            ```properties
+            PORT   STATE SERVICE
+            21/tcp open  ftp
+            | ftp-anon: Anonymous FTP login allowed (FTP code 230)
+            | drwxr-xr-x   2 root     root         4096 May 18 11:35 backups
+            | drwxr-xr-x  16 root     root         4096 Jun 27 02:42 cache
+            | -rw-r--r--   1 root     root           36 May 16 15:01 checkfile
+            | drwxr-xr-x   2 root     root         4096 May 15 19:09 games
+            | drwxr-xr-x  55 root     root         4096 Jun 26 16:27 lib
+            | drwxrwsr-x   2 root     staff        4096 May 30  2016 local
+            | lrwxrwxrwx   1 root     root            9 May 15 18:57 lock -> /run/lock
+            | drwxr-xr-x  16 root     root         4096 Jun 27 02:42 log
+            | drwxrwsr-x   2 root     mail         4096 Jun 27 01:50 mail
+            | drwxr-xr-x   2 root     root         4096 May 15 18:57 opt
+            | lrwxrwxrwx   1 root     root            4 May 15 18:57 run -> /run
+            | drwxr-xr-x   6 root     root         4096 Jun 26 16:27 spool
+            | drwxrwxrwt   2 root     root         4096 May 16 15:35 tmp [NSE: writeable]
+            |_drwxrwxrwx  10 root     root         4096 May 18 00:02 www [NSE: writeable]
+
+            ```
+        * I show you this because anonymous is off, all you'll get is:
+            ```properties
+            PORT   STATE SERVICE
+            21/tcp open  ftp
+            ```
 1. Remove ProFTP (and toor)
-    * 
-    remove proftp
-    delete toor user
-    install ftp
-    * https://www.pluralsight.com/blog/it-ops/how-to-set-up-safe-ftp-in-linux
-    * `nano /etc/vsftpd.conf` and change `anonymous_enable=YES` to `anonymous_enable=NO`
+    1. You'll notice the service remains after trying to remove the package: `apt-get remove proftpd-basic`, and after stopping the service: `service proftpd stop`
+    1. We can verify that ProFTP was *not* installed using apt-get. Which is really annoying. And it means we have to trace down the files and get rid of them manually.
+    2. Get the process ID: `netstat -tulpn | grep proftpd`
+    3. Now trace that process like we did with the backdoor:
+        * `ps -eFH | grep -B5 <process id>`
+            * `toor      3795     1  0  6495  1200   0 Jun25 ?        00:00:00   proftpd: (accepting connections)` unfortunately, all this tells us is that it was run by toor. (who really should be named `tool`).
+        * `lsof -p <process id>` gives at least something useful:
+            * `proftpd 3795 toor  txt    REG                8,1   531568 2894102 /usr/local/sbin/proftpd`
+            * with this, we finally have the path to the program: `/usr/local/sbin/proftpd`
+            * unlike the backdoor, this is not a bash script (want to find out? `cat /usr/local/sbin/proftpd` will fill your screen with junk, because it is a binary file, not a text file).
+        * We can go ahead and delete that file: `rm /usr/local/sbin/proftpd`
+        * And kill the process: `kill -s SIGKILL 3795`
+    4. Verify that it's gone:
+        * no longer listening `netstat -tulpn | grep proftpd` ( should give no output )
+2. Delete `toor` user:
+    * `deluser toor` no longer gives an error message about a running process.
+3. Clean up vsftp configuration:
+    * We now don't have anything listening on port 21, so the scorebot will start freaking out. Need to install something quickly.
+    * Before we install vsftp, we need to fix something really nasty: an insecure vsftp configuration file is already on the server -- and the installer won't remove it.
+    * check it out: `cat /etc/vsftpd.conf` -- you'll notice a lot of "insecure" options enabled.
+    * We can purge configuration by doing `apt-get purge vsftpd`. This will also insure we can install clean vsftpd with new config files.
+        * you may need to get rid of cups first - `apt-get purge cups`
+    * we may also need to remove the `/srv/ftp` folder -- `rm -rf /srv`
+4. Install vsftp
+    * `apt-get install vsftpd`
+    * configure it to ban anonymous access:
+        1. edit the config file: `nano /etc/vsftpd.conf`
+            * change `anonymous_enable=YES` to `anonymous_enable=NO`
+            * uncomment the line `#local_enable=YES` -- make it `local_enable=YES` (otherwise scorebot will have trouble...)
+        3. save the file
+        4. restart the service to reload configuration: `service vsftp restart`
     * ordinary we would also allow local users to log in, however, we just need to keep the port open, not actually logging in since nagios can't log in..., so not enabling local users keeps things simple. :)
-    * restart the service to reload configuration: `service vsftp restart`
-    
-* apache:
-    * https://www.tecmint.com/apache-security-tips/
-    * Remove the phpinfo.php file:
-        * `rm /var/www/phpinfo.php`
-    * change permissions of web directory:
+5. Verify you are listening and anonymous is banned:
+    * `netstat -tulpn | grep vsftpd`
+    * *From Kali* `nmap -p 21 -v -oN results.txt --open --script ftp-anon 192.168.210.54` (make sure to change the IP Address!!)
+
+### Apache (port 80)
+
+1. Remove bad files:
+    * `rm /var/www/phpinfo.php`
+    * `rm -rf /var/www/backups` (on some servers... contains a copy of the passwd file!!!)
+2. Fix the permissions of web directory:
+    * `chown -R www-data:www-data /var/www` -- change the web files to be owned by the apache user.
+    * `find /var/www -type f -exec chmod 640 {} \;` -- give all files the right permissions
+    * `find /var/www -type d -exec chmod 750 {} \;` -- give all directories the right permissions
+        
         * http://fideloper.com/user-group-permissions-chmod-apache
         * https://wiki.apache.org/httpd/FileSystemPermissions
-        * `$ sudo chown -R www-data:www-data /var/www`
-        * `find /var/www/html -type f -exec chmod 640 {} \;`
-        * `find /var/www/html -type d -exec chmod 750 {} \;`
     * to configure: `nano /etc/apache2/apache2.conf`
     * Lock down which directories are accessible:
         ```
@@ -373,6 +431,12 @@ I have been in charge of two servers running WordPress that got hacked. One was 
 
 Mr Frankenfield will cover this section in more detail. 
 
+
+## General Verification:
+
+Check for anonymous ftp on all your linux servers:
+    * *From Kali* `nmap -p 21 -v -oN results.txt --open --script ftp-anon 192.168.210.0/24` (make sure to change the 210 to your subnet!)
+
 ## 6. Firewalls
 
 Mr Frankenfield will cover firewalls in his networking section, but I'll quickly cover them in less detail.
@@ -420,3 +484,7 @@ See [this ubuntu article](https://help.ubuntu.com/14.04/serverguide/user-managem
 
 ## Learn more about service management
 You can get more information from [this article](https://www.tecmint.com/remove-unwanted-services-from-linux/) and [this q&a](http://askubuntu.com/questions/477596/how-to-stop-and-remove-ftp-service).
+
+## Learn more about securing specific services:
+[FTP](https://www.pluralsight.com/blog/it-ops/how-to-set-up-safe-ftp-in-linux)
+[Apache](https://www.tecmint.com/apache-security-tips/)
