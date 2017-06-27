@@ -341,14 +341,25 @@ We need to disable anonymous access. But it also appears that the toor user has 
     * `rm /var/www/phpinfo.php`
     * `rm -rf /var/www/backups` (on some servers... contains a copy of the passwd file!!!)
 2. Fix the permissions of web directory:
+    * `ls -al /var/www` to see the permissions
     * `chown -R www-data:www-data /var/www` -- change the web files to be owned by the apache user.
     * `find /var/www -type f -exec chmod 640 {} \;` -- give all files the right permissions
     * `find /var/www -type d -exec chmod 750 {} \;` -- give all directories the right permissions
-        
-        * http://fideloper.com/user-group-permissions-chmod-apache
-        * https://wiki.apache.org/httpd/FileSystemPermissions
-    * to configure: `nano /etc/apache2/apache2.conf`
-    * Lock down which directories are accessible:
+3. Configure the sites:
+    * get into the configuration directory: `cd /etc/apache2`
+    * check what sites exist: `ls sites-enabled` -- should only be `000-default`. If not, let me know.
+    * Edit the default site config: `nano /etc/apache2/sites-enabled/000-default`
+    * Remove this section:
+        ```
+            ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/
+            <Directory "/usr/lib/cgi-bin">
+                    AllowOverride None
+                    Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+                    Order allow,deny
+                    Allow from all
+            </Directory>
+        ```
+    * Change the section for `<Directory />` to:
         ```
             <Directory />
             Options None
@@ -356,32 +367,62 @@ We need to disable anonymous access. But it also appears that the toor user has 
             Deny from all
             </Directory>
         ```
-    
-    * Disable Directory Listing:
+    * Change the section for `<Directory /var/www>` to:
         ```
-          <Directory /var/www/html>
+          <Directory /var/www>
               Options -Indexes
+              AllowOverride None
+              Order allow,deny
+              allow from all
           </Directory>
         ```
-    * Verify it's running as www-data:
-        * `User www-data`
-        * `Group http-web`
-        * `ps ax | grep 'apache'`
-    * hide version numbers
-        * `ServerSignature Off`
-        * `ServerTokens Prod`
-    * install modsecurity?
-        $ sudo apt-get install libapache2-modsecurity
-        $ sudo a2enmod mod-security
-        $ sudo /etc/init.d/apache2 force-reload
-    * install modevasive?
-        $ sudo apt-get install libapache2-modevasive
-        $ sudo a2enmod mod-evasive
-        $ sudo /etc/init.d/apache2 force-reload
+    * restart apache to make sure everything is still good:
+        * `service apache2 restart`
+    * verify you've locked things down by going to: `http://192.168.210.54/~root` (replace IP address...) in a browser -- you should get a "forbidden" error.
+    * open the config file: `nano /etc/apache2/apache2.conf`
+3. Verify it's running as www-data:
+        ```
+        # These need to be set in /etc/apache2/envvars
+        User ${APACHE_RUN_USER}
+        Group ${APACHE_RUN_GROUP}
+        ```
+    * oh, but wait, quick gotta check another file: `cat /etc/apache2/envvars | grep APACHE_RUN`
+        ```
+        export APACHE_RUN_USER=www-data
+        export APACHE_RUN_GROUP=www-data
+        export APACHE_RUN_DIR=/var/run/apache2$SUFFIX
+        ``` 
+    * if you see www-data in the envvars file as above, you are good. :)
+    * Another way to verify: `ps -eF | grep apache` and you should see something like:
+        ```
+        root     20292     1  0 47285 10396   0 00:09 ?        00:00:00 /usr/sbin/apache2 -k start
+        www-data 20299 20292  0 47295  6584   0 00:09 ?        00:00:00 /usr/sbin/apache2 -k start
+        www-data 20300 20292  0 47295  6584   0 00:09 ?        00:00:00 /usr/sbin/apache2 -k start
+        www-data 20301 20292  0 47591 12224   0 00:09 ?        00:00:00 /usr/sbin/apache2 -k start
+        www-data 20302 20292  0 47295  6584   0 00:09 ?        00:00:00 /usr/sbin/apache2 -k start
+        www-data 20303 20292  0 47295  6584   0 00:09 ?        00:00:00 /usr/sbin/apache2 -k start
+        www-data 20330 20292  0 50350 23220   0 00:10 ?        00:00:00 /usr/sbin/apache2 -k start
+        www-data 20333 20292  0 47341  7052   0 00:10 ?        00:00:00 /usr/sbin/apache2 -k start
+        www-data 20334 20292  0 47295  6584   0 00:10 ?        00:00:00 /usr/sbin/apache2 -k start
+        www-data 20335 20292  0 47295  6584   0 00:10 ?        00:00:00 /usr/sbin/apache2 -k start
+        www-data 20336 20292  0 47341  7012   0 00:10 ?        00:00:00 /usr/sbin/apache2 -k start
+        root     20425 18845  0  1960   872   0 00:18 pts/0    00:00:00 grep apache
+        ```
+3. Hide your version numbers:
+    * This stuff at the bottom of an error page gives much info to Red Team.
+        * *Apache/2.2.22 (Debian) Server at 192.168.210.55 Port 80*
+    * Hide it by: 
+        * edit the security config: `nano /etc/apache2/conf.d/security`
+        * Change the following lines:
+            * `ServerSignature On` to `ServerSignature Off`
+            * `ServerTokens OS` to `ServerTokens Prod`
+        * Restart apache `service apache2 restart`
+        * verify your error messages are less helpful. ;)
+4. Install mod-security:
+    * `apt-get install libapache2-modsecurity` (should enable the module and restart apache automatically)
 
 
-* Mysql: 
-    * https://www.digitalocean.com/community/tutorials/how-to-secure-mysql-and-mariadb-databases-in-a-linux-vps
+### Mysql: 
     * only run it on loopback interface:
         * configure: `nano /etc/mysql/my.cnf`
         * change: `bind-address = 127.0.0.1`
@@ -488,3 +529,6 @@ You can get more information from [this article](https://www.tecmint.com/remove-
 ## Learn more about securing specific services:
 [FTP](https://www.pluralsight.com/blog/it-ops/how-to-set-up-safe-ftp-in-linux)
 [Apache](https://www.tecmint.com/apache-security-tips/)
+[Apache Wiki Permissions Article ](https://wiki.apache.org/httpd/FileSystemPermissions)
+[Apache Permissions Article](http://fideloper.com/user-group-permissions-chmod-apache)
+[Securing Mysql](https://www.digitalocean.com/community/tutorials/how-to-secure-mysql-and-mariadb-databases-in-a-linux-vps)
