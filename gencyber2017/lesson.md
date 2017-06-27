@@ -385,8 +385,9 @@ We need to disable anonymous access. But it also appears that the toor user has 
     * restart apache to make sure everything is still good:
         * `service apache2 restart`
     * verify you've locked things down by going to: `http://192.168.210.54/~root/.bashrc` (replace IP address...) in a browser -- you should get a "forbidden" error.
-3. Verify it's running as www-data:
+3. Verify it's running as www-data -- you should not need to change anything for this step.
 
+    This is a little confusing, because in `/etc/apache2/apache2.conf` we would expect to see some usernames, but instead we get this wierd junk.
     ```
     # These need to be set in /etc/apache2/envvars
     User ${APACHE_RUN_USER}
@@ -430,7 +431,7 @@ We need to disable anonymous access. But it also appears that the toor user has 
 
 ### mysql (port 3306): 
 
-* check what it's listening on: `netstat -tulpn | grep myslq`
+* check what it's listening on: `netstat -tulpn | grep mysql`
     * if "Local Address" starts with 0.0.0.0, it is public. If 127.0.0.1, it's private to this server.
 * configure: `nano /etc/mysql/my.cnf`
 * only run on the server's internal network.
