@@ -457,14 +457,27 @@ This is necessary on at least drupal. I recommend not removing it since it liste
 2. Remove the default web applications:
     * go into the webapps directory: `cd webapps`
     * verify with `pwd` -- should give: `/opt/tomcat7/webapps`
-    * `rm -rf docs examples`
+    * `rm -rf docs examples ROOT`
+    * reconfigure default page
     * verify with ls.
 3. Change the management password:
-    * I'll need to research this a bit more...
+    * `nano /opt/tomcat7/conf/tomcat-users.xml`
+    * Find this section:j
+        ```
+          <role rolename="manager-gui"/>
+          <user username="tomcat" password="tomcat" roles="manager-gui"/>
+        ```
+    * Replace the password -- example: `password="tomcat"` to `password="badwolf"` changes the password to `badwolf` -- but use a service account password.
+    * restart the tomcat service: `service tomcat7 restart`
 4. Protect the shutdown port
-    * I'll need to research this a bit more...
-5. Prevent directory listings.
-    * I'll need to research this a bit more...
+    * `nano /opt/tomcat7/conf/server.xml`
+    * Change `<Server port="8005" shutdown="SHUTDOWN">` to `<Server port="-1" shutdown="SHUTDOWN">`
+    * restart the tomcat service: `service tomcat7 restart`
+5. Turn off AJP
+    * the AJP connector enables proxying requests to tomcat through apache. This is not necessary for our configuration.
+    * `nano /opt/tomcat7/conf/server.xml`
+    * Remove this line: `    <Connector port="8009" protocol="AJP/1.3" redirectPort="8443" />`
+    * restart the tomcat service: `service tomcat7 restart`
 
 ### ssh (port 22)
 
@@ -472,13 +485,14 @@ Secure SHell allows operating system users to log in. Apart from changing operat
 
 There is the scan warning about weak encryption algorithms. However, as advanced as our Red Team is, they aren't the NSA, and they don't have a week to attack us, so the weak encryption algorithms should not cause significant problems, and therefore are not worth spending time on (yet). Also, we aren't using outdated ssh clients, so we won't be exposing this vulnerability.
 
-If we have time, we can try installing `fail2ban` as a countermeasure.
+If you have time, try installing `fail2ban` as a countermeasure.
 
 ## 5. Application Software
 
 Once you have your operating system and services secure, it's time to secure the applications running on your system, which can often provide a lot of access for attackers to your computer.
 
 Your applications are:
+
 * WordPress
 * Joomla
 * Drupal
@@ -488,10 +502,11 @@ Your applications are:
 * Bugzilla
 
 For each, you will need to address the same broad categories:
-    * Updates
-    * Configuration
-    * User accounts
-    
+
+* Updates
+* Configuration
+* User accounts
+
 I have been in charge of two servers running WordPress that got hacked. One was because WordPress was out of date, another was because a WordPress account had a bad password.
 
 Mr Frankenfield will cover this section in more detail. 
@@ -504,8 +519,6 @@ Check for anonymous ftp on all your linux servers:
 ## 6. Firewalls
 
 Mr Frankenfield will cover firewalls in his networking section, but I'll quickly cover them in less detail.
-
-`iptables`
 
 # Resources
 
