@@ -347,11 +347,13 @@ We need to disable anonymous access. But it also appears that the toor user has 
     * `rm /var/www/phpinfo.php`
     * `rm -rf /var/www/backups` (on some servers... contains a copy of the passwd file!!!)
 2. Fix the permissions of web directory:
+    * DON'T run these commands on bugzilla. If you already have, you can fix your permissions with:
+        * `/var/www/checksetup.pl`
     * `ls -al /var/www` to see the permissions
     * `chown -R www-data:www-data /var/www` -- change the web files to be owned by the apache user.
     * `find /var/www -type f -exec chmod 640 {} \;` -- give all files the right permissions
     * `find /var/www -type d -exec chmod 750 {} \;` -- give all directories the right permissions
-3. Configure the sites:
+3. Configure the sites (non-Bugzilla)
     * get into the configuration directory: `cd /etc/apache2`
     * check what sites exist: `ls sites-enabled` -- should only be `000-default`. If not, let me know.
     * Edit the default site config: `nano /etc/apache2/sites-enabled/000-default`
@@ -385,6 +387,43 @@ We need to disable anonymous access. But it also appears that the toor user has 
     * restart apache to make sure everything is still good:
         * `service apache2 restart`
     * verify you've locked things down by going to: `http://192.168.210.54/~root/.bashrc` (replace IP address...) in a browser -- you should get a "forbidden" error.
+    * also verify that your web application is still running by going to `http://192.168.210.54/` (replace the IP of course).
+3. Configure the sites (Bugzilla):
+    * get into the configuration directory: `cd /etc/apache2`
+    * check what sites exist: `ls sites-enabled` -- should only be `000-default`. If not, let me know.
+    * Edit the default site config: `nano /etc/apache2/sites-enabled/000-default`
+    * Remove this section:
+        ```
+            ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/
+            <Directory "/usr/lib/cgi-bin">
+                    AllowOverride None
+                    Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+                    Order allow,deny
+                    Allow from all
+            </Directory>
+        ```
+    * Change the section for `<Directory />` to:
+        ```
+            <Directory />
+            Options None
+            Order deny,allow
+            Deny from all
+            </Directory>
+        ```
+    * Change the section for `<Directory /var/www>` to:
+        ```
+        <Directory /var/www>
+          AddHandler cgi-script .cgi
+          Options +ExecCGI +FollowSymLinks
+          DirectoryIndex index.cgi index.html
+          AllowOverride All
+          Allow from all
+        </Directory>
+        ```
+    * restart apache to make sure everything is still good:
+        * `service apache2 restart`
+    * verify you've locked things down by going to: `http://192.168.210.54/~root/.bashrc` (replace IP address...) in a browser -- you should get a "forbidden" error.
+    * also verify that your web application is still running by going to `http://192.168.210.54/` (replace the IP of course).
 3. Verify it's running as www-data -- you should not need to change anything for this step.
 
     This is a little confusing, because in `/etc/apache2/apache2.conf` we would expect to see some usernames, but instead we get this wierd junk.
@@ -440,6 +479,8 @@ We need to disable anonymous access. But it also appears that the toor user has 
     * add this to the next line after bind-address: `local-infile=0`
 * Don't run it as root!
     * change this `user            = root` to `user = mysql`
+* change database file permissions to be owned by mysql:
+    * `chown -R mysql:msyql /var/lib/mysql`
 * restart the service: `service mysql restart`
 * verify with `netstat -tulpn | grep mysql`
     * `tcp        0      0 127.0.0.1:3306          0.0.0.0:*               LISTEN      24388/mysqld` -- this indicates we are listening only on localhost.
@@ -557,4 +598,5 @@ You can get more information from [this article](https://www.tecmint.com/remove-
 [Apache Wiki Permissions Article ](https://wiki.apache.org/httpd/FileSystemPermissions)
 [Apache Permissions Article](http://fideloper.com/user-group-permissions-chmod-apache)
 [Securing Mysql](https://www.digitalocean.com/community/tutorials/how-to-secure-mysql-and-mariadb-databases-in-a-linux-vps)
+[Running Mysql as non-root](https://dev.mysql.com/doc/refman/5.7/en/changing-mysql-user.html)
 [Securing Tomcat](https://www.owasp.org/index.php/Securing_tomcat)
