@@ -450,13 +450,7 @@ On the rest of the servers, configure it:
 
 ### postgres (port 3305)
 
-Remove this on all servers except drupal.
-
-For now, just remove it. If it disables one of your services, we can reinstall it.
-`apt-get remove postgresql`
-
-On Drupal, configure it to listen only locally:
-    * 
+This is necessary on at least drupal. I recommend not removing it since it listens locally by default, and can cause issues if you remove it.
 
 ### tomcat (port 8080)
 
