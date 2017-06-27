@@ -384,14 +384,14 @@ We need to disable anonymous access. But it also appears that the toor user has 
         ```
     * restart apache to make sure everything is still good:
         * `service apache2 restart`
-    * verify you've locked things down by going to: `http://192.168.210.54/~root` (replace IP address...) in a browser -- you should get a "forbidden" error.
-    * open the config file: `nano /etc/apache2/apache2.conf`
+    * verify you've locked things down by going to: `http://192.168.210.54/~root/.bashrc` (replace IP address...) in a browser -- you should get a "forbidden" error.
 3. Verify it's running as www-data:
-        ```
-        # These need to be set in /etc/apache2/envvars
-        User ${APACHE_RUN_USER}
-        Group ${APACHE_RUN_GROUP}
-        ```
+
+    ```
+    # These need to be set in /etc/apache2/envvars
+    User ${APACHE_RUN_USER}
+    Group ${APACHE_RUN_GROUP}
+    ```
     * oh, but wait, quick gotta check another file: `cat /etc/apache2/envvars | grep APACHE_RUN`
         ```
         export APACHE_RUN_USER=www-data
@@ -428,11 +428,7 @@ We need to disable anonymous access. But it also appears that the toor user has 
     * `apt-get install libapache2-modsecurity` (should enable the module and restart apache automatically)
 
 
-### Mysql: 
-
-Configure on all servers except drupal -- remove it on drupal: `apt-get remove mysql-server`
-
-On the rest of the servers, configure it:
+### mysql (port 3306): 
 
 * check what it's listening on: `netstat -tulpn | grep myslq`
     * if "Local Address" starts with 0.0.0.0, it is public. If 127.0.0.1, it's private to this server.
