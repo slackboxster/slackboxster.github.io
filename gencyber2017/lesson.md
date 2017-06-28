@@ -617,3 +617,4 @@ You can get more information from [this article](https://www.tecmint.com/remove-
 [Securing Mysql](https://www.digitalocean.com/community/tutorials/how-to-secure-mysql-and-mariadb-databases-in-a-linux-vps)
 [Running Mysql as non-root](https://dev.mysql.com/doc/refman/5.7/en/changing-mysql-user.html)
 [Securing Tomcat](https://www.owasp.org/index.php/Securing_tomcat)
+[Scanning for malware and rootkits](https://www.howtoforge.com/tutorial/how-to-scan-linux-for-malware-and-rootkits/)
