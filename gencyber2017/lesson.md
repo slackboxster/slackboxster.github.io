@@ -503,7 +503,7 @@ This is necessary on at least drupal. I recommend not removing it since it liste
 
 ### tomcat (port 8080)
 
-> Note: if you are having trouble restarting tomcat, you will need to reinstall java-common: `apt-get install java-common`
+> Note: if you are having trouble restarting tomcat, you will need to reinstall java:
 > * install the Java 7 runtime environment: `apt-get install openjdk-7-jre`
 > * reconfigure tomcat to use the newly installed java: 
 >     * edit this config file: `nano /etc/default/tomcat7`
