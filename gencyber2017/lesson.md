@@ -479,7 +479,9 @@ If you are having trouble installing or removing vsftp:
 ### mysql (port 3306): 
 
 > If you are having problems with a web application, make sure to change the database file permissions: 
->    * `chown -R mysql:msyql /var/lib/mysql`
+>    * verify things are bad: `ls -al /var/lib/mysql` -- you will see files owned by root.
+>    * `chown -R mysql:mysql /var/lib/mysql`
+>    * verify things are now good: `ls -al /var/lib/mysql` -- the files should be owned by mysql
 
 * check what it's listening on: `netstat -tulpn | grep mysql`
     * if "Local Address" starts with 0.0.0.0, it is public. If 127.0.0.1, it's private to this server.
