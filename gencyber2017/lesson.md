@@ -264,6 +264,8 @@ udp6       0      0 :::54657                :::*                                
 
 When you are done:
 
+On Jenkins, before doing autoremove, prevent java-common from being autoremoved: `apt-get install java-common`
+
 `apt-get autoremove` to remove remaining unnecessary packages.
 
 
@@ -327,7 +329,6 @@ We need to disable anonymous access. But it also appears that the toor user has 
     * check it out: `cat /etc/vsftpd.conf` -- you'll notice a lot of "insecure" options enabled.
     * We can purge configuration by doing `apt-get purge vsftpd`. This will also insure we can install clean vsftpd with new config files.
         * you may need to get rid of cups first - `apt-get purge cups`
-    * we may also need to remove the `/srv/ftp` folder -- `rm -rf /srv`
 4. Install vsftp
     * `apt-get install vsftpd`
     * configure it to ban anonymous access:
@@ -340,6 +341,13 @@ We need to disable anonymous access. But it also appears that the toor user has 
 5. Verify you are listening and anonymous is banned:
     * `netstat -tulpn | grep vsftpd`
     * *From Kali* `nmap -p 21 -v -oN results.txt --open --script ftp-anon 192.168.210.54` (make sure to change the IP Address!!)
+
+If you are having trouble installing or removing vsftp:
+* `rm /var/lib/dpkg/info/vsftpd.*`
+* `apt-get clean`
+* `apt-get purge vsftpd`
+* `apt-get purge cups`
+* `apt-get install vsftpd`
 
 ### Apache (port 80)
 
@@ -470,6 +478,9 @@ We need to disable anonymous access. But it also appears that the toor user has 
 
 ### mysql (port 3306): 
 
+> If you are having problems with a web application, make sure to change the database file permissions: 
+>    * `chown -R mysql:msyql /var/lib/mysql`
+
 * check what it's listening on: `netstat -tulpn | grep mysql`
     * if "Local Address" starts with 0.0.0.0, it is public. If 127.0.0.1, it's private to this server.
 * configure: `nano /etc/mysql/my.cnf`
@@ -492,6 +503,12 @@ This is necessary on at least drupal. I recommend not removing it since it liste
 
 ### tomcat (port 8080)
 
+> Note: if you are having trouble restarting tomcat, you will need to reinstall java-common: `apt-get install java-common`
+> * install the Java 7 runtime environment: `apt-get install openjdk-7-jre`
+> * reconfigure tomcat to use the newly installed java: 
+>     * edit this config file: `nano /etc/default/tomcat7`
+>     * change this line `#JAVA_HOME=/usr/lib/jvm/openjdk-6-jdk` to this `JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64`
+
 1. figure out where tomcat is running: `echo $CATALINA_HOME`
     * gives us: `/opt/tomcat7`
     * so go into that directory: `cd /opt/tomcat7`
@@ -503,7 +520,7 @@ This is necessary on at least drupal. I recommend not removing it since it liste
     * verify with ls.
 3. Change the management password:
     * `nano /opt/tomcat7/conf/tomcat-users.xml`
-    * Find this section:j
+    * Find this section:
         ```
           <role rolename="manager-gui"/>
           <user username="tomcat" password="tomcat" roles="manager-gui"/>
