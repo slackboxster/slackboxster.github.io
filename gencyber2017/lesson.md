@@ -536,7 +536,7 @@ This is necessary on at least drupal. I recommend not removing it since it liste
 5. Turn off AJP
     * the AJP connector enables proxying requests to tomcat through apache. This is not necessary for our configuration.
     * `nano /opt/tomcat7/conf/server.xml`
-    * Remove this line: `    <Connector port="8009" protocol="AJP/1.3" redirectPort="8443" />`
+    * Remove this line: `<Connector port="8009" protocol="AJP/1.3" redirectPort="8443" />`
     * restart the tomcat service: `service tomcat7 restart`
 
 ### ssh (port 22)
