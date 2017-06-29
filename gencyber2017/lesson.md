@@ -562,7 +562,7 @@ Your applications are:
 
 * WordPress
 * Joomla
-* Drupal -- [how to update](https://www.drupal.org/docs/7/updating-your-drupal-site/how-to-update-drupal-core)
+* Drupal -- [update method 1](https://www.drupal.org/node/2550801) or [update method 2](https://www.drupal.org/docs/7/updating-your-drupal-site/how-to-update-drupal-core)
 * Request Tracker
 * Jenkins
 * Gitlab
