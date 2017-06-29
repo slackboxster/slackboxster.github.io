@@ -547,6 +547,13 @@ There is the scan warning about weak encryption algorithms. However, as advanced
 
 If you have time, try installing `fail2ban` as a countermeasure.
 
+You can also remove ssh key-based authentication as a pivot prevention measure:
+* Key-based authentication is actually a best practice in normal production environments. However, we aren't using ssh keys to authenticate, so the ssh keys simply provide a way for red team to pivot without passwords from one server to another.
+* You can disable key-based authentication this way:
+    * `nano /etc/ssh/sshd_config`
+    * Change `PubkeyAuthentication yes` to `PubkeyAuthentication no`
+    * restart ssh: `service ssh restart`
+
 ## 5. Application Software
 
 Once you have your operating system and services secure, it's time to secure the applications running on your system, which can often provide a lot of access for attackers to your computer.
@@ -620,3 +627,4 @@ You can get more information from [this article](https://www.tecmint.com/remove-
 [Running Mysql as non-root](https://dev.mysql.com/doc/refman/5.7/en/changing-mysql-user.html)
 [Securing Tomcat](https://www.owasp.org/index.php/Securing_tomcat)
 [Scanning for malware and rootkits](https://www.howtoforge.com/tutorial/how-to-scan-linux-for-malware-and-rootkits/)
+[Disabling SSH Public Key Authentication](https://docs.oseems.com/general/application/ssh/disable-public-key-authentication)
