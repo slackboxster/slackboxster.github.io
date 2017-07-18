@@ -1,0 +1,14 @@
+---
+layout: post
+title: Bitbucket Pipelines adds Dependency Caching
+---
+
+At my company we've been using Bitbucket Pipelines for automated builds for about a year now. After migrating away from Bamboo, the simplicity and flexibility of Pipelines is quite refreshing. I love building with Docker images, and being able to keep the build configuration in the same source code as the application. That means the build configuration is versioned along with the application, and there is all sorts of other goodness.
+
+One minor annoyance that I've encountered is that we have to install packages every time. Our application uses maven (for Grails 2), npm, and jspm, so there's a lot of downloading before any normal build can run, and its 99% redundant. I've thought about trying to pre-install packages on the Docker image we use for our build (which is already custom because we're using two very disparate language stacks in the same repo), but it just seemed a little too complicated -- and besides, it would either require writing another automated build to build the Docker image every time the dependencies changed, or just remembering to do it and still have to run the installers to update things every time. 
+
+Today, I hit the point where I just wanted to find a solution to this problem. For one thing, waiting for builds to finish wastes a lot of my own time. And gives me windows to become distracted by interesting articles or fun projects. Another fairly big thing is that we ran out of build minutes this month. They aren't expensive, but we use a lot of build minutes, and a lot of that time is spent downloading packages, so it would definitely be a double win to cache the dependencies -- save my time, and save build minutes.
+ 
+I was wrestling through the different ways I could implement it myself, when I came across an article about Bitbucket Dependency Caching, and thought "How have I not heard of this before?" Well, as it turns out, they just added it -- in June of this year. The documenation for their [dependency caching feature](https://confluence.atlassian.com/bitbucket/caching-dependencies-895552876.html) is pretty straightforward. So I tested it out, and within minutes had our maven dependencies configured. I had to go with a custom definition for the node and jspm packages as they are in a subfolder. Nonetheless, it was quite quick and painless, and solved a pesky problem for me without me having to write any code myself, or create a funky custom two-stage build.
+
+I've been quite impressed with Bitbucket Pipelines since we started using it, and this feature is just another example of how it just keeps getting better. :)
