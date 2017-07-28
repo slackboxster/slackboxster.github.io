@@ -1,0 +1,73 @@
+<html>
+<head>
+    <style>
+        body {
+            margin: 0;
+            background:#333;
+        }
+        h1 {
+            color: #fff;
+            position:fixed;
+            top: 0;
+            width:100%;
+            display: block;
+            height: 100px;
+            text-align:center;
+        }
+        .fixed {
+            position: fixed;
+            width: 75%;
+            left: 0;
+            top: 0;
+            padding-top:100px;
+        }
+
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        li {
+            display: block;
+            height:50px;
+            width: 100%;
+            margin-bottom:50px;
+            background: #c00;
+        }
+
+        .sliding {
+            width:75%;
+            padding-left: 50%;
+            padding-right: 25%;
+            padding-top:100px;
+        }
+        .sliding ul {
+            padding-top:50px;
+        }
+
+        .sliding ul li {
+            /*background:#0f0;*/
+        }
+    </style>
+</head>
+<body>
+    <h1>Scroll Me Sideways!</h1>
+    <div class="fixed">
+        <ul>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
+    </div>
+    <div class="sliding">
+        <ul>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
+    </div>
+</body>
+</html>
