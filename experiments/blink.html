@@ -1,0 +1,47 @@
+<html>
+    <head>
+        <title>42nk00k13's blog</title>
+        <style type="text/css">
+            .top { height:150px; }
+            .middle { height:150px; }
+            .bottom { height:150px; }
+            h1 { font-size:100px; margin:0; text-align:center; font-family: monospace, sans-serif; }
+            .grid { float:left; position:relative; display:inline-block; text-align:center; }
+            .one { width:8.33%; }
+            .two { width:16.67%; }
+            .three { width:25%; }
+            .four { width:33.33%; }
+            .five { width:41.67%; }
+            .six { width:50%; }
+            .seven { width:58.33%; }
+            .eight { width:66.67%; }
+            .nine { width:75%; }
+            .ten { width:83.33%; }
+            .eleven { width:91.67%; }
+            .twelve { width:100%; }
+            .red { background: #a00; }
+            .blue { background:#00a; }
+            .green { background:#0a0; }
+        </style>
+
+        <script type="text/javascript">
+            var blink = function() {
+                document.getElementById("title").innerHTML = "42nk--k13";
+                setTimeout(function() {
+                    document.getElementById("title").innerHTML = "42nk00k13";
+                    setTimeout(blink,Math.floor((Math.random()*14500))+500);
+                },Math.floor(Math.random()*300)+200);
+            }
+            setTimeout(blink,4000);
+        </script>
+    </head>
+    <body>
+        <div class="twelve blue top grid"></div>
+        <div class="one red grid middle"></div>
+        <div class="ten grid middle ">
+            <h1 id="title">42nk00k13</h1>
+        </div>
+        <div class="one green grid middle"></div>
+        <div class="twelve grid blue bottom"></div>
+    </body>
+</html>
