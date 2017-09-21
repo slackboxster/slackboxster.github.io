@@ -1,17 +1,47 @@
 # Build your own VCS
 
-In order to use git effectively, it helps to understand what git is doing. This fun activity will enable you to interact with git more confidently. 
+In order to use git effectively, it helps to understand what git is doing. This fun activity will enable you to interact with git more confidently. We won't do a super in-depth implementation -- just enough to help you get a conceptual model of git that you can apply to learning and working with it.
 
 ## Getting Started -- what does a VCS do?
-A Version Control System allows you to keep track of your code, view different versions of your code, and even collaborate with others.
-<Insert official definition here>
+> Version control is a system that records changes to a file or set of files over time so that you can recall specific versions later.
+
+*From [the git book section 1.1](https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control).*
+
+A Version Control System allows you to keep track of your code, view different versions of your code, switch between versions, maintain separate branches of your code, and share your work with other programmers.
 
 Before we start building one, we need to have some basic concepts:
 
 * Working directory: this is the directory containing your code. You will be modifying files in this directory.
 * Repository: this is a hidden subdirectory of your working directory that will contain all the files that your VCS needs to manage your code. We'll name this `.repo`.
 
-In this activity, we will keep things simple by adding another directory, `.vcs` -- this is where we will keep the code of our vcs so that we can easily reference the scripts we create.
+In this activity, we will keep things simple by adding another directory, `.vcs` -- this is where we will keep the code of our vcs so that we can easily reference the scripts we create. Ordinarily your VCS is a software packaged installed on your operating system, so you just run it as you would any other linux command. But we don't have time to mess with the $PATH variable and such, so this is simpler.
+
+If you crave a top down approach, here's a basic outline:
+
+A version control system will allow us to save snapshots of our code, creating a history that we can navigate back and forth through. We can tag snapshots so they are easier to find. We can also create parallel branches of code, so that we can try things and discard them later (or so that multiple people can work in parallel). Branching necessitates merging, and we will keep our project simple by stopping the train before we start trying to merge code. But having done all the other things will give you enough of an idea of how everything else works that you will be able to appreciate the complexity of the merge process. And the magic necessary to make it smooth.
+
+We will start our version control system with the basics -- saving code. In order to do that, we'll have to detour through setting up a repository. From there we will figure out how to jump around in the history. Once we can jump around, tagging will be a simple extension. Then we will come to figuring out how to do branching... which is deceptively complex in its own right. :) 
+
+## How do I know if I'm doing well?
+I'll include some test scripts so that you can figure out how well your repository is doing. 
+
+## Setting up a Repository
+The first thing you would want to do with a VCS is save your code regularly. (Not just save your files, but save the entire set of your project's files). But we need a place for saving code, and a system for saving code. 
+
+The `init` script is the beginning of any VCS project.
+
+you should be able to type `.vcs/init.sh`, and have your repository set up.
+
+Write an `init.sh` script that will do the following:
+
+* Init requires a target. The first argument should be the name of a directory to initialize. If that directory doesn't exist, create it. If it does exist, first check for an existing VCS repo, and exit if one exists.
+    * E.g. If I run `.vcs/init.sh spam`, it will create a new directory named spam
+* create a directory called `.repo` inside the target directory. This is where the code will be saved, and where we will also keep other vcs files that help us manage the saved code.
+    * Create the following directory structure 
+* inside your `.repo` directory, create a directory called `refs`. This will come in handy later.
+* inside your `.repo` directory, create a directory called `snapshots`. This will store the code.
+
+<create a copy of the code after every step>
 
 ## Saving code
 The first thing you want to be able to do with a VCS is to save code. We're going to call these "Snapshots", and we're going to save them to our `.repo` directory.
