@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Incomplete Linux Security Crash Course
+title: Build your own VCS
 permalink: git/build-your-own-vcs
 ---
 
