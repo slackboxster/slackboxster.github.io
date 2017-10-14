@@ -4,8 +4,6 @@ title: Build your own VCS
 permalink: git/build-your-own-vcs
 ---
 
-# Build your own VCS
-
 A good conceptual model is the key to using any tool effectively. In order to use a version control system, or even understand how it can be useful, you will need to develop a conceptual model. For programmers, coding something yourself is a very effective way to develop a conceptual model of how it works -- a model that you can feel. This fun activity will help you develop a conceptual model that will make learning a complex tool much simpler.
 
 ## Getting Started -- what does a VCS do?
