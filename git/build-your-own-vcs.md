@@ -22,22 +22,12 @@ A version control system will allow us to save snapshots of our code, creating a
 
 We will start our version control system with the basics -- saving code. In order to do that, we'll have to detour through setting up a repository. From there we will figure out how to jump around in the history. Once we can jump around, tagging will be a simple extension. Then we will come to figuring out how to do branching... which is deceptively complex in its own right. :) And once you've finished branching, you'll be ready for Git.
 
-
-
-
-TODO: figure out the passthrough fails (when the fail comes first...)
-TODO: make sure the instructions reference the new path-based approach.
-TODO: show examples of log output.
-TODO: I'll need some code to commit; also, I'll need to think a little longer about how to test... seems like it will be a tad tedious.
-TODO: create a base directory structure.
-TODO: create the project files (with blank sc)
-TODO: create a final manual test activity.
-
-
-
-
 ## Project
-Download the initial project files here, and follow the instructions in the README. The project includes some test scripts that you can use to verify that your scripts do exactly what they are supposed to. Once you've got everything working with the test scripts, we will do a quick manual test of your system so you get to see the fruits of your labors. A (mostly blank) file has already been created for each of the scripts you will need to write.
+Download the initial project files, and follow the instructions in the README. The project includes some test scripts that you can use to verify that your scripts do exactly what they are supposed to. A (mostly blank) file has already been created for each of the scripts you will need to write, and the test script will also make sure they are all executable.
+
+[Initial Project Files](http://ryanheathcote.com/git/vcs-project.zip)
+
+The main instruction you will need is: run the tests with `make test`. 
 
 ## Setting up a Repository
 The first thing you would want to do with a VCS is save your code regularly. (Not just save your files, but save the entire set of your project's files). But we need a place for saving code, and a system for saving code. 
@@ -55,7 +45,7 @@ Update the `vcs/vcs-init.sh` script that will do the following:
 * If the above checks pass, initialize the repository.
 * create a directory called `.repo` inside the target directory. This is where the code will be saved, and where we will also keep other vcs files that help us manage the saved code.
 * inside your `.repo` directory, create a directory called `refs`. This will come in handy later.
-* inside your `.repo/refs` directory, create a directory called `branches` and another one called `tags`. These will come in handy later.
+* inside your `.repo/refs` directory, create a directory called `tags`. This will come in handy later.
 * inside your `.repo` directory, create a directory called `snapshots`. This will store the code.
 
 ## Saving code
@@ -76,30 +66,57 @@ Update the `vcs/vcs-commit.sh` script to do the following:
     * hint: you can get the current user's username in linux. You can also get the current date.
    
 ##Finding code
-It's somewhat useful to be able to save snapshots easily, because I can explore the snapshots directory if I want to find an old version of a file after I've broken something. But why don't we make this even easier.
+It's somewhat useful to be able to save snapshots easily, because I can explore the snapshots directory if I want to find an old version of a file after I've broken something. But it's a little tedious to try to find which snapshot has what I'm looking for. So let's create a script that will let us scroll through all the commit messages.
 
 Start by creating a "history viewer". We'll call it `vcs-log.sh`
 
 This script is really simple:
-* for each snapshot, output the snapshot id followed by the contents of the snapshot's .commit file.
+* for each snapshot, output the snapshot id followed by the contents of the snapshot's `.commit` file.
+
+Here's some sample output (from commits made by the test script, hence they're all the same time...)
+
+```
+snapshot: 1
+user: ryan
+time: Sat Oct 14 15:18:22 EDT 2017
+message: 
+
+snapshot: 2
+user: ryan
+time: Sat Oct 14 15:18:22 EDT 2017
+message: 
+
+snapshot: 3
+user: ryan
+time: Sat Oct 14 15:18:22 EDT 2017
+message: 
+
+snapshot: 4
+user: ryan
+time: Sat Oct 14 15:18:22 EDT 2017
+message: this is a test message!
+```
 
 ## Tagging
 
-We sometimes want to "bookmark" certain commits. This is really simple -- we create a script that creates another file in the `.repo/refs/tags` folder that references our current checked out snapshot.
+We sometimes want to "bookmark" certain commits. This is really simple -- we create a script that creates file in the `.repo/refs/tags` folder that references our current checked out snapshot.
 
-Objective: If I have checked out snapshot 4, and I run `.vcs/tag.sh test`, it will create a file in the refs directory named `test` that contains `4`. 
+Objective: I can create an alias for snapshot 4 by running `.vcs/tag.sh 4 test`, it will create a file in the refs directory named `test` that links to `snapshots/4`. 
 
 Write a script called `.vcs/tag.sh`:
 * take a command line parameter giving the name of the tag.
-* create a file in the refs directory with the name of the tag and its contents being the current snapshot.
+* create a symbolic link in `refs/tags` directory that named for the first parameter and linking to the snapshot whos id is given in the second parameter.
 
-Update `vcs-log.sh` to show tags next to the appropriate snapshot id.
+Update `vcs-log.sh` to list tags as well as snapshots in the output. (Note this output will be somewhat redundant as a snapshot that is tagged will be listed twice, but it would be quite complicated to make the tags list next to their respective snapshots).
 
 ##Bonus Tasks
 
+* Show the tags of a snapshot before the output of that snapshot's `.commit` file.
 * Implement a vcs ignore system -- if your working directory contains a `.vcsignore` file, the commit script will not include files referenced by the `.vcsignore` file in the snapshot.
     * Ok, let me make that clearer. If I have a `.vcsignore` file that contains two lines, one with `build` and another with `.blob`, then, when I create my snapshot, if there is a directory named `build`, I won't copy that directory into the snapshot. Likewise, I will ignore a file named `.blob`.`
 * Change the directory name of a snapshot to be a sha1 hash of the commit directory and change the system to use the hashes to reference snapshots.
 
 ## Further discussion
 This activity is much more limited in scope than I'd hoped it to be (much to the relief of all students assigned the task). To get a sense for where this would go, read the article that inspired the activity: ["The Git Parable" by Tom Preston-Werner](http://tom.preston-werner.com/2009/05/19/the-git-parable.html). 
+
+We haven't implemented some of the more complex features that would make this tool powerful, but we don't need to. There is already a professional tool that we can learn that has all the complex features. However, you could use this system to back up your projects. Explore the `.testing_temp` directory after you run a test to see how the system looks on your hard drive. Also feel free to play around with it on other projects. Although once you've learned git, you won't want to.
