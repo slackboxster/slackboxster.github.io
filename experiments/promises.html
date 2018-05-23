@@ -17,7 +17,7 @@ script {
                 <p>In this example, you click the button to create a promise, and click another button to resolve it. The resolution will not happen until you click the second button.</p>
                 <p> also note that the promise only gets resolved once.</p>
                 <script>
-function createPromise() {
+function createExample1Promise() {
     new Promise(function(resolve, reject) {
         window.resolver = function() {
             resolve("hello");
@@ -33,7 +33,7 @@ function resolvePromise() {
     window.resolver();
 }
                 </script>
-                <button onclick="createPromise()">Create the Promise</button>
+                <button onclick="createExample1Promise()">Create the Promise</button>
                 <button onclick="resolvePromise()">Resolve the Promise</button>
             </li>
 
@@ -42,7 +42,7 @@ function resolvePromise() {
                 <p>In this example, you click the button to create a promise, and click another button to resolve it. The resolution will not happen until you click the second button.</p>
                 <p> also note that the promise only gets resolved once.</p>
                 <script>
-function createPromise() {
+function createExample2Promise() {
     window.resolvers = [];
 
     var firstPromise = new Promise(function(resolve, reject) {
@@ -72,7 +72,7 @@ function resolveSecondPromise() {
     window.resolvers[1]();
 }
                 </script>
-                <button onclick="createPromise()">Create the Promise</button>
+                <button onclick="createExample2Promise()">Create the Promise</button>
                 <button onclick="resolveFirstPromise()">Resolve the First</button>
                 <button onclick="resolveSecondPromise()">Resolve the Second</button>
             </li>
