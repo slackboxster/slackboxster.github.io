@@ -1,0 +1,81 @@
+<html>
+    <head>
+        <style>
+script {
+    display: block;
+    font-family: monospace;
+    white-space: pre-wrap;
+    border: 1px solid #555;
+    padding: 1em;
+}
+        </style>
+    </head>
+    <body>
+        <ol>
+            <li>
+                <h1>Basic Promise</h1>
+                <p>In this example, you click the button to create a promise, and click another button to resolve it. The resolution will not happen until you click the second button.</p>
+                <p> also note that the promise only gets resolved once.</p>
+                <script>
+function createPromise() {
+    new Promise(function(resolve, reject) {
+        window.resolver = function() {
+            resolve("hello");
+        }
+    }).then(function(response) {
+        alert("Promise Resolved! (with value: '" + response + "')");
+    });
+
+    alert("Promise created. Click the resolve button to see what happens");
+}
+
+function resolvePromise() {
+    window.resolver();
+}
+                </script>
+                <button onclick="createPromise()">Create the Promise</button>
+                <button onclick="resolvePromise()">Resolve the Promise</button>
+            </li>
+
+            <li>
+                <h1>Promise that waits for all</h1>
+                <p>In this example, you click the button to create a promise, and click another button to resolve it. The resolution will not happen until you click the second button.</p>
+                <p> also note that the promise only gets resolved once.</p>
+                <script>
+function createPromise() {
+    window.resolvers = [];
+
+    var firstPromise = new Promise(function(resolve, reject) {
+        window.resolvers[0] = function() {
+            resolve("First Promise Resolved");
+        }
+    });
+    
+    var secondPromise = new Promise(function(resolve, reject) {
+        window.resolvers[1] = function() {
+            resolve("Second Promise Resolved");
+        };
+    });
+    
+    var wrapperPromise = Promise.all([firstPromise, secondPromise]).then(function(values) {
+        alert("All Promises resolved, see?\n" + values[0] + "\n" + values[1]);
+    });
+
+    alert("Promises created. Click the resolve buttons to see what happens");
+}
+
+function resolveFirstPromise() {
+    window.resolvers[0]();
+}
+
+function resolveSecondPromise() {
+    window.resolvers[1]();
+}
+                </script>
+                <button onclick="createPromise()">Create the Promise</button>
+                <button onclick="resolveFirstPromise()">Resolve the First</button>
+                <button onclick="resolveSecondPromise()">Resolve the Second</button>
+            </li>
+        </ol>
+    </body>
+</html>

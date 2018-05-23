@@ -10,3 +10,4 @@ From time to time I decide to do something interesting. Here are some of those t
 2. [CSS Shapes](border_trick.html)
 3. [Blinking Letters](blink.html)
 4. [Hover reveal](hover_reveal.html)
+5. [Interactive Promises Demo](promises.html)
