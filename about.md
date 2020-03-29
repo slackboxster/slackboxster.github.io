@@ -3,6 +3,10 @@ layout: page
 title: About 
 ---
 
-I am an engineer at [SharpTop Co](http://www.sharptop.co). I am passionate about building quality software products, using great tools in my work, understanding the economics and philosophy of my work, and passing on all of what I have learned to the next generation.
+I am a human. My trade is (polyglot|full stack|cloud native|etc) software development. I love writing clean code to solve complex business problems. My passion is teaching others what I've learned, and gaining a deep and concrete understanding of the tools of my trade.
 
-This site records some of the many profound and deep brain things going on inside my head. If you care to explore that region of the known universe, stick around.
+I currently work as at [Deloitte](https://www2.deloitte.com/us/en.html). I've also worked for [CloudCard](https://onlinephotosubmission.com/) and [SharpTop Co](http://sharptop.io/).
+
+I think a lot about the nature of software, and the implications this has on how it is built, managed and maintained.
+
+This site collects my deep thoughts, learnings, and teachings on the art of software development.
