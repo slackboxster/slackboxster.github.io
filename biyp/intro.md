@@ -1,7 +1,7 @@
 ---
 layout: page
 title: BIYP: the Build It Yourself Project
-permalink: biyp/
+permalink: biyp/intro
 ---
 
 Welcome to the Build It Yourself Project (BIYP). This is a collection of computer science assignments that require you to build some complex piece of the computer science world on your own, from basic components. Through this process, you gain a deep, concrete understanding of what otherwise seems like incomprehensible magic. In turn, this deep understanding enables you to build and debug complex systems that interact with other tools that, apart from building them yourself, you would never be able to understand.
