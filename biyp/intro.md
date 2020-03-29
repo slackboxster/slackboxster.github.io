@@ -4,8 +4,6 @@ title: BIYP: the Build It Yourself Project
 permalink: biyp/intro
 ---
 
-# the Build It Yourself Project (BIYP)
-
 Welcome to the Build It Yourself Project (BIYP). This is a collection of computer science assignments that require you to build some complex piece of the computer science world on your own, from basic components. Through this process, you gain a deep, concrete understanding of what otherwise seems like incomprehensible magic. In turn, this deep understanding enables you to build and debug complex systems that interact with other tools that, apart from building them yourself, you would never be able to understand.
 
 This project is very much a work in progress. To start with, it's basically a bunch of links. But my long term goal is that this becomes a computer science curriculum, and that you could get the equivalent of a top notch CS degree simply by going through most of the assignments in this course.
@@ -19,8 +17,8 @@ Check out [this medium post](https://medium.com/better-programming/why-coding-yo
 ## Assignments
 
 * Web Browser:
-    * https://cheesecakelabs.com/blog/how-to-build-a-browser-pt-1/amp/
     * https://limpet.net/mbrubeck/2014/08/08/toy-layout-engine-1.html
+    * https://www.html5rocks.com/en/tutorials/internals/howbrowserswork/
 * Web Server:
     * https://ruslanspivak.com/lsbaws-part1/
 * JavaScript / HTML Data Binding: https://medium.com/swlh/https-medium-com-drmoerkerke-data-binding-for-web-components-in-just-a-few-lines-of-code-33f0a46943b3
